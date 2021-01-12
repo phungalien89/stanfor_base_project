@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/vendor/guzzlehttp/psr7" />
+      <path value="$PROJECT_DIR$/vendor/intervention/image" />
+      <path value="$PROJECT_DIR$/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/vendor/composer" />
+      <path value="$PROJECT_DIR$/vendor/ralouphie/getallheaders" />
+      <path value="$PROJECT_DIR$/vendor/ckfinder/samples" />
+      <path value="$PROJECT_DIR$/vendor/ckfinder/skins" />
+      <path value="$PROJECT_DIR$/vendor/ckfinder/userfiles" />
+      <path value="$PROJECT_DIR$/vendor/ckfinder/lang" />
+      <path value="$PROJECT_DIR$/vendor/ckfinder/libs" />
+      <path value="$PROJECT_DIR$/vendor/ckfinder/plugins" />
+      <path value="$PROJECT_DIR$/vendor/ckfinder/core" />
+      <path value="$PROJECT_DIR$/vendor/ckeditor_mine/translations" />
+      <path value="$PROJECT_DIR$/vendor/node_modules/@ckeditor" />
+      <path value="$PROJECT_DIR$/vendor/node_modules/lodash-es" />
+      <path value="$PROJECT_DIR$/vendor/PearMail/Mail" />
+      <path value="$PROJECT_DIR$/vendor/PearMail/tests" />
+      <path value="$PROJECT_DIR$/vendor/phpmailer/phpmailer" />
+    </include_path>
+  </component>
+</project>

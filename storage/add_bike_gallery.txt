@@ -1,0 +1,1 @@
+<figure class="image image_resized" style="width:50o_o;"><img src="http://localhost:63342/Website/storage/uploads/bike/images/pcx/post/01/01.jpg"></figure><figure class="image image_resized" style="width:50o_o;"><img src="http://localhost:63342/Website/storage/uploads/bike/images/pcx/post/01/02.jpg"></figure>
