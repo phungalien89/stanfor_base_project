@@ -19,8 +19,7 @@ spl_autoload_register(function($class_name){
         $b = $bikeProvider->getBikeById($bikeId);
         $bikeProvider->deleteBike($bikeId);
         unset($_SESSION['bike_action']);
-        $prefix = "http://localhost:63342/Website";
-        $filePath = substr($b->bikeImage, strlen($prefix));
+        $filePath = "/storage/" . $dir . $b->bikeImage;
         $filePath = str_replace("/", "\\", $filePath);
         unlink($_SERVER['DOCUMENT_ROOT'] . $filePath);//also delete the bike image
         $_SESSION['message'][] = ['title'=>'Xóa sản phẩm', 'status'=>'info', 'content'=>'Đã xóa <b>'. $b->bikeName .'</b> thành công!'];
@@ -117,7 +116,7 @@ spl_autoload_register(function($class_name){
                     <div class="hover-scale" style="width: 80px">
                         <?php
                         if(strlen($bike->bikeImage) > 0){ ?>
-                            <img class="img-thumbnail w-100" src="<?= $bike->bikeImage ?>" alt="">
+                            <img class="img-thumbnail w-100" src="<?= '../storage/' . $bike->bikeImage ?>" alt="">
                         <?php }
                         ?>
                     </div>

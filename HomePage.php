@@ -115,21 +115,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     $bikeMan = new BikeProvider();
 
     $newBikes = $bikeMan->getNewBikes();
-    $honda = [];
-
-    if(isset($_REQUEST['filter'])){
-        $filter_val = $_REQUEST['filter'];
-        switch ($filter_val){
-            case "honda":
-                $honda = $bikeMan->getBikesByKeyword("honda", "bikeBrand");
-                break;
-        }
-    }
-    //unset($_SESSION['cart']);
-    if(isset($_SESSION['cart'])){
-        //print_r($_SESSION['cart']);
-        //print_r(array_search(2, $_SESSION['cart']) > -1);
-    }
+    $countNewBikes = count($newBikes);
+    $newBikes = $bikeMan->getNewBikes('8');
 
     $_SESSION['pageNum'] = 1;
 
@@ -147,28 +134,25 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         <div class="content">
             <div class="content_top position-relative">
                 <span>sản phẩm mới</span>
-                <div class="see-all <?= count($newBikes) > 8 ? 'd-flex' : 'collapse' ?> align-items-center">
-                    <a class="btn btn-info" href="http://localhost:63342/Website/ProductList.php?q=newBike">Xem tất cả</a>
+                <div class="see-all <?= $countNewBikes > 8 ? 'd-flex' : 'collapse' ?> align-items-center">
+                    <a class="btn btn-info" href="ProductList.php?q=newBike">Xem tất cả</a>
                     <span class="pl-2 fa fa-arrow-circle-right"></span>
                 </div>
             </div>
             <div class="section group row py-3">
                 <?php
-                    foreach($newBikes as $id => $newBike) {
-                        if ($id > 7) {
-                            break;
-                        } ?>
+                    foreach($newBikes as $id => $newBike) { ?>
                         <div class="col-sm-6 col-md-4 col-lg-3 py-2">
                             <div class="card shadow hover-scale-down">
                                 <div class="new-product"></div>
                                 <div class="card-body position-relative">
-                                    <a href="http://localhost:63342/Website/BikeDetail.php?bikeId=<?= $newBike->bikeId ?>"
+                                    <a href="BikeDetail.php?bikeId=<?= $newBike->bikeId ?>"
                                        class="stretched-link"></a>
                                     <div style="<?= $newBike->bikeDiscountPrice == 0 ? 'color: transparent' : '' ?>"
                                          class="price discount text-center"><?= formatPrice($newBike->bikePrice) ?>
                                         &#8363;
                                     </div>
-                                    <img class="mx-auto w-100" src="<?= $newBike->bikeImage ?>"
+                                    <img class="mx-auto w-100" src="storage/<?= $newBike->bikeImage ?>"
                                          alt="<?= $newBike->bikeImage ?>"/>
                                     <div class="text-center font-weight-bold"
                                          style="font-size: 1.25em; color: #009688;"><?= $newBike->bikeName ?></div>
@@ -207,7 +191,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                                         location.assign('<?= $_SERVER['PHP_SELF'] ?>');
                                                     }
                                                 };
-                                                httpRequest.open("POST", "http://localhost:63342/Website/AddToCart.php?addToCart=<?= $newBike->bikeId ?>", true);
+                                                httpRequest.open("POST", "/AddToCart.php?addToCart=<?= $newBike->bikeId ?>", true);
                                                 httpRequest.send();
                                             });
                                             $('#btnAddWishNew<?= $newBike->bikeId ?>').on("click", () => {
@@ -217,7 +201,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                                         location.assign('<?= $_SERVER['PHP_SELF'] ?>');
                                                     }
                                                 };
-                                                httpRequest.open("POST", "http://localhost:63342/Website/AddToWish.php?addToWish=<?= $newBike->bikeId ?>", true);
+                                                httpRequest.open("POST", "AddToWish.php?addToWish=<?= $newBike->bikeId ?>", true);
                                                 httpRequest.send();
                                             });
                                         </script>
@@ -231,30 +215,29 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             </div>
             <?php
                 $arr_promoted = $bikeMan->getPromotedBikes();
+                $countPromoteBike = count($arr_promoted);
+                $arr_promoted = $bikeMan->getPromotedBikes(0);//limit 8 offset 0
             ?>
             <div class="content_bottom position-relative">
                 <span>đang khuyến mãi</span>
-                <div class="see-all <?= count($arr_promoted) > 8 ? 'd-flex' : 'collapse' ?> align-items-center">
-                    <a class="btn btn-info" href="http://localhost:63342/Website/ProductList.php?q=promoteBike">Xem tất cả</a>
+                <div class="see-all <?= $countPromoteBike > 8 ? 'd-flex' : 'collapse' ?> align-items-center">
+                    <a class="btn btn-info" href="ProductList.php?q=promoteBike">Xem tất cả</a>
                     <span class="pl-2 fa fa-arrow-circle-right"></span>
                 </div>
             </div>
             <div class="section group row py-3">
                 <?php
-                    foreach($arr_promoted as $id => $bike){
-                        if($id > 7){
-                            break;
-                        } ?>
+                    foreach($arr_promoted as $id => $bike){ ?>
                         <div class="col-sm-6 col-md-4 col-lg-3">
                             <div class="card shadow hover-scale-down">
                                 <?php
-                                $fiveDays_ago = strtotime("-8 day");
+                                $fiveDays_ago = strtotime("-5 day");
                                 ?>
                                 <div class="<?= strtotime($bike->dateModified) > $fiveDays_ago ? 'new-product' : ''?>"></div>
                                 <div class="card-body position-relative">
-                                    <a href="http://localhost:63342/Website/BikeDetail.php?bikeId=<?= $bike->bikeId ?>" class="stretched-link"></a>
+                                    <a href="BikeDetail.php?bikeId=<?= $bike->bikeId ?>" class="stretched-link"></a>
                                     <div style="<?= $bike->bikeDiscountPrice == 0 ? 'color: transparent' : '' ?>" class="price discount text-center"><?= formatPrice($bike->bikePrice) ?> &#8363;</div>
-                                    <img class="mx-auto w-100" src="<?= $bike->bikeImage ?>" alt="<?= $bike->bikeImage ?>" />
+                                    <img class="mx-auto w-100" src="storage/<?= $bike->bikeImage ?>" alt="<?= $bike->bikeImage ?>" />
                                     <div class="text-center font-weight-bold" style="font-size: 1.25em; color: #009688;"><?= $bike->bikeName ?></div>
                                     <?php
                                     if($bike->bikeDiscountPrice == 0){ ?>
@@ -282,7 +265,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                                         location.assign('<?= $_SERVER['PHP_SELF'] ?>');
                                                     }
                                                 };
-                                                httpRequest.open("POST", "http://localhost:63342/Website/AddToCart.php?addToCart=<?= $bike->bikeId ?>", true);
+                                                httpRequest.open("POST", "AddToCart.php?addToCart=<?= $bike->bikeId ?>", true);
                                                 httpRequest.send();
                                             });
                                             $('#btnAddWishPromote<?= $bike->bikeId ?>').on("click", ()=>{
@@ -292,7 +275,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                                         location.assign('<?= $_SERVER['PHP_SELF'] ?>');
                                                     }
                                                 };
-                                                httpRequest.open("POST", "http://localhost:63342/Website/AddToWish.php?addToWish=<?= $bike->bikeId ?>", true);
+                                                httpRequest.open("POST", "AddToWish.php?addToWish=<?= $bike->bikeId ?>", true);
                                                 httpRequest.send();
                                             });
                                         </script>

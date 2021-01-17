@@ -8,3 +8,6 @@ if(isset($_REQUEST['selection'])){
         $_SESSION[$q] = "OK";
     }
 }
+if(isset($_REQUEST['postPage'])){
+    $_SESSION['postPage'] = (int) $_REQUEST['postPage'];
+}

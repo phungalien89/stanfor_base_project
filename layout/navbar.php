@@ -120,7 +120,7 @@
                 </div>
             </li>
             <li class="nav-item pr-0">
-                <img style="width: 45px; height: 45px; display: <?= $user ? "block" : "none" ?>" class="rounded-circle hover-shadow-outline" src="<?= isset($user) ? $user->userImage : "" ?>" alt="<?= isset($user) ? $user->userImage : "" ?>">
+                <img style="width: 45px; height: 45px; display: <?= $user ? "block" : "none" ?>" class="rounded-circle hover-shadow-outline" src="<?= $is_adminPage ? '../' : '' ?><?= isset($user) ? 'storage/' . $user->userImage : "" ?>" alt="<?= $is_adminPage ? '../' : '' ?> <?= isset($user) ? 'storage/' . $user->userImage : "" ?>">
             </li>
             <li class="nav-item <?= ($is_login | $is_logged) ? 'collapse' : '' ?>">
                 <a href="http://localhost:63342/Website/login.php" class="nav-link">Đăng nhập</a>
@@ -128,8 +128,8 @@
             <li class="nav-item <?= ($is_register | $is_logged) ? 'collapse' : '' ?>">
                 <a href="http://localhost:63342/Website/register.php" class="nav-link">Đăng ký</a>
             </li>
-            <li class="nav-item px-2 <?= $is_adminPage ? 'active' : '' ?> <?= $is_userAdmin ? "" : "collapse" ?>">
-                <a href="http://localhost:63342/Website/admin/AdminPage.php" class="nav-link"><span class="fa fa-cog" style="font-size: 1.5em;"></span></a>
+            <li class="nav-item px-2 <?= $is_adminPage ? 'collapse' : '' ?> <?= $is_userAdmin ? "" : "collapse" ?>">
+                <a href="admin/AdminPage.php" class="nav-link"><span class="fa fa-cog" style="font-size: 1.5em;"></span></a>
             </li>
             <li class="nav-item">
                 <div class="btn-group">

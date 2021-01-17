@@ -8,7 +8,7 @@
         transition: all 0.35s ease;
     }
 </style>
-<div class="message-notifier">
+<div id="message_container" class="message-notifier">
     <?php
         if(isset($_SESSION['message'])){
             foreach ($_SESSION['message'] as $id => $message){ ?>
@@ -31,11 +31,19 @@
 <script>
     $(document).ready(()=>{
         $('.toast').toast('show');
-        var toasts = document.getElementsByClassName('message-notifier');
-        var originTop = toasts[0].offsetTop;
+        var toast = document.getElementById('message_container');
+        var originTop = toast.offsetTop;
         window.onscroll = ()=>{
-            toasts[0].style.top = originTop + window.scrollY + "px";
-        }
+            toast.style.top = originTop + window.scrollY + "px";
+
+            //See on scrollToTop.php
+            if(window.scrollY > 200){
+                $('#arrow_up').removeClass('collapse');
+            }
+            else{
+                $('#arrow_up').addClass('collapse');
+            }
+        };
 
         $('.toast').on("hidden.bs.toast", ()=>{
             var httpRequest = new XMLHttpRequest();

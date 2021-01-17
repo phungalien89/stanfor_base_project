@@ -76,7 +76,7 @@
                             $_SESSION['is_logged'] = "true";
                             $_SESSION['loggedId'] = $user->userId;
                             $_SESSION['message'][] = ['title'=>'Đăng nhập', 'status'=>'success', 'content'=>'Chào mừng <b>ADMIN</b> đã trở lại!'];
-                            header("location: http://localhost:63342/Website/admin/AdminPage.php");
+                            header("location: admin/AdminPage.php");
                         }
                         else{
                             $mes_password = "Mật khẩu không đúng";
@@ -91,7 +91,7 @@
                             $_SESSION['is_logged'] = "true";
                             $_SESSION['loggedId'] = $user->userId;
                             $_SESSION['message'][] = ['title'=>'Đăng nhập', 'status'=>'success', 'content'=>'Xin chào <b>'. $user->userDisplayName .'</b>. Bạn đã đăng nhập thành công!'];
-                            header("location:http://localhost:63342/Website/HomePage.php");
+                            header("location: HomePage.php");
                         }
                     }
 
@@ -112,7 +112,10 @@
     }
 </style>
 <body>
-<?php include "layout/navbar.php" ?>
+<?php
+    include "layout/navbar.php";
+    include "inc/message.php";
+?>
 <div class="container pt-5">
     <div class="row pt-4">
         <div class="col-sm-10 col-md-8 col-lg-6 mx-auto">

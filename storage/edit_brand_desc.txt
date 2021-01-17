@@ -1,1 +1,1 @@
-<figure class="image image_resized" style="width:50o_o;"><img src="http://localhost:63342/Website/storage/uploads/bike/images/hinh-nen-lien-quan-may-tinh-Airi.jpg"></figure><p>Honda là thương hiệu của Nhật Bản…</p>
+<p>Yamaha là thương hiệu của Nhật Bản…</p>

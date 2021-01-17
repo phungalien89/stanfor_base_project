@@ -24,7 +24,7 @@
                 $bIkd = (int) $_SESSION['cart'][$id];
                 $b = $bikeMan->getBikeById($bIkd);
                 unset($_SESSION['cart'][$id]);
-                array_values($_SESSION['cart']);
+                $_SESSION['cart'] = array_values($_SESSION['cart']);
                 $_SESSION['message'][] = ['title'=>'Giỏ hàng', 'status'=>'info' , 'content'=>'<div>Đã loại bỏ <b>'. $b->bikeName .'</b> khỏi giỏ hàng <span class="fas fa-cart-plus text-danger"></span> thành công</div>'];
                 //echo "<script>location.assign('". $_SERVER['PHP_SELF'] ."')</script>";
             }
@@ -118,26 +118,25 @@
                             if(count($_SESSION['cart']) > 0){
                                 $carts = $_SESSION['cart'];
                                 $cartTotal = 0;
-                                foreach($carts as $id => $bikeId){
+                                foreach($carts as $cardId => $bikeId){
                                     $bike = $bikeMan->getBikeById($bikeId);
                                     global $cartTotal;
                                     $cartTotal += $bike->bikeDiscountPrice > 0 ? $bike->bikeDiscountPrice : $bike->bikePrice; ?>
                                     <div class="clear row mb-2 position-relative">
                                         <div class="col-10">
-                                            <a href="http://localhost:63342/Website/BikeDetail.php?bikeId=<?= $bikeId ?>" class="stretched-link"></a>
                                             <img class="img-thumbnail mr-3" style="width: 80px; float: left" src="<?= $bike->bikeImage ?>" alt="">
                                             <div class="cart-heading"><?= $bike->bikeName ?></div>
                                             <div class="form-group" style="margin: 0">
-                                                <label for="nudItemCount<?= $id ?>">Số lượng</label>
-                                                <input onchange="nudItemCount_onchange(event)" type="number" value="1" min="1" max="999" name="nudItemCount<?= $id ?>" id="nudItemCount<?= $id ?>" class="">
+                                                <label for="nudItemCount<?= $cardId ?>">Số lượng</label>
+                                                <input onchange="nudItemCount_onchange(event)" type="number" value="1" min="1" max="999" name="nudItemCount<?= $cardId ?>" id="nudItemCount<?= $cardId ?>" class="">
                                             </div>
-                                            <div id="cartItemPrice<?= $id ?>" class="cart-item-price"><?= $bike->bikeDiscountPrice > 0 ? formatPrice($bike->bikeDiscountPrice) : formatPrice($bike->bikePrice) ?> &#8363;</div>
+                                            <div id="cartItemPrice<?= $cardId ?>" class="cart-item-price"><?= $bike->bikeDiscountPrice > 0 ? formatPrice($bike->bikeDiscountPrice) : formatPrice($bike->bikePrice) ?> &#8363;</div>
                                         </div>
                                         <div class="col-2 d-flex flex-column align-content-center justify-content-center">
-                                            <button onclick="return clearCart(this.name)" name="btnRemoveItem<?= $id ?>" id="btnRemoveItem<?= $id ?>" class="close">
+                                            <button onclick="return clearCart(this.name)" name="btnRemoveItem<?= $cardId ?>" id="btnRemoveItem<?= $cardId ?>" class="close">
                                                 <span class="fa fa-times text-danger"></span>
                                             </button>
-                                            <input type="hidden" name="removeId<?= $id ?>" value="<?= $id ?>">
+                                            <input type="hidden" name="removeId<?= $cardId ?>" value="<?= $cardId ?>">
                                         </div>
                                     </div>
                                 <?php }

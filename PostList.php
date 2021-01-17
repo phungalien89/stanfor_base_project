@@ -228,6 +228,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     $postMan = new PostProvider();
     $post = null;
     $posts = $postMan->getAllPost();
+
+    $currentPage = 1;
+    if(isset($_SESSION['postPage'])){
+        $currentPage = (int) $_SESSION['postPage'];
+    }
 ?>
 <div class="wrap">
     <div class="header">
@@ -244,45 +249,112 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 </div>
                 <div class="clear"></div>
             </div>
+            <?php
+                $pageNum = floor(count($posts) / 4);
+                if(count($posts) % 4 > 0){
+                    $pageNum += 1;
+                }
+            ?>
+            <ul class="pt-3 pagination justify-content-end">
+                <li class="page-item <?= $currentPage == 1 ? 'disabled' : '' ?>">
+                    <a id="pageLinkTopPrev" href="" class="page-link">
+                        <span class="fa fa-arrow-left"></span>
+                    </a>
+                </li>
+                <?php
+                    for($i = 0; $i < $pageNum; $i++){ ?>
+                        <li class="page-item <?= $currentPage == $i+1 ? 'active' : '' ?>">
+                            <a id="pageLinkTop<?= $i ?>" href="" class="page-link"><?= $i+1 ?></a>
+                        </li>
+                        <script>
+                            $('#pageLinkTop<?= $i ?>').on("click", (e)=>{
+                                e.preventDefault();
+                                var httpRequest = new XMLHttpRequest();
+                                httpRequest.onreadystatechange = ()=>{
+                                    if(httpRequest.readyState == 4 && httpRequest.status == 200){
+                                        location.assign("<?= $_SERVER['PHP_SELF'] ?>");
+                                    }
+                                }
+                                httpRequest.open("POST", "admin/setPageNumber.php?postPage=<?= $i+1 ?>");
+                                httpRequest.send();
+                            });
+                        </script>
+                    <?php }
+                ?>
+                <li class="page-item <?= $currentPage == $pageNum ? 'disabled' : '' ?>">
+                    <a id="pageLinkTopNext" href="" class="page-link">
+                        <span class="fa fa-arrow-right"></span>
+                    </a>
+                </li>
+                <script>
+                    $('#pageLinkTopPrev').on("click", (e)=>{
+                        e.preventDefault();
+                        var httpRequest = new XMLHttpRequest();
+                        httpRequest.onreadystatechange = ()=>{
+                            if(httpRequest.readyState == 4 && httpRequest.status == 200){
+                                location.assign("<?= $_SERVER['PHP_SELF'] ?>");
+                            }
+                        }
+                        httpRequest.open("POST", "admin/setPageNumber.php?postPage=<?= $currentPage - 1 ?>");
+                        httpRequest.send();
+                    });
+                    $('#pageLinkTopNext').on("click", (e)=>{
+                        e.preventDefault();
+                        var httpRequest = new XMLHttpRequest();
+                        httpRequest.onreadystatechange = ()=>{
+                            if(httpRequest.readyState == 4 && httpRequest.status == 200){
+                                location.assign("<?= $_SERVER['PHP_SELF'] ?>");
+                            }
+                        }
+                        httpRequest.open("POST", "admin/setPageNumber.php?postPage=<?= $currentPage + 1 ?>");
+                        httpRequest.send();
+                    });
+                </script>
+            </ul>
             <div class="section group py-3">
                 <div class="flex-column">
                     <?php
-                    foreach($posts as $id => $post){ ?>
-                        <div class="post-container p-2 border my-2 rounded">
-                            <a href="http://localhost:63342/Website/PostDetail.php?postId=<?= $post->postId ?>" class="stretched-link"></a>
-                            <div class="row">
-                                <div class="col-sm-4 col-lg-3">
-                                    <img class="img-thumbnail w-100" src="<?= $post->postImage ?>" alt="<?= $post->postImage ?>">
-                                </div>
-                                <div class="col-sm-8 col-lg-9">
-                                    <div class="post-body">
-                                        <div class="font-weight-bold" style="font-size: 1.15em;"><?= $post->postTitle ?></div>
-                                        <div class="text-justify">
-                                            <div id="post-content<?= $id ?>"></div>
-                                            <script>
-                                                var el = document.createElement('body')
-                                                el.innerHTML = '<?= $post->postContent ?>';
-                                                var Ptags = el.getElementsByTagName('p');
-                                                for(var x of Ptags){
-                                                    var wordCount = 0;
-                                                    for(var i = 0; i < x.innerHTML.length; i++){
-                                                        if(x.innerHTML.charAt(i) == " "){
-                                                            wordCount++;
-                                                        }
-                                                        if(wordCount >= 50){
-                                                            var txt = x.innerHTML.substr(0, i);
-                                                            $('#post-content<?= $id ?>').html(txt + "...");
-                                                            break;
+                    foreach($posts as $id => $post) {
+                        if ($id >= (4 * ($currentPage - 1)) && $id < (4 * $currentPage)) { ?>
+                            <div class="post-container p-2 border my-2 rounded">
+                                <a href="PostDetail.php?postId=<?= $post->postId ?>"
+                                   class="stretched-link"></a>
+                                <div class="row">
+                                    <div class="col-sm-4 col-lg-3">
+                                        <img class="img-thumbnail w-100" src="<?= $post->postImage ?>"
+                                             alt="<?= $post->postImage ?>">
+                                    </div>
+                                    <div class="col-sm-8 col-lg-9">
+                                        <div class="post-body">
+                                            <div class="font-weight-bold"
+                                                 style="font-size: 1.15em;"><?= $post->postTitle ?></div>
+                                            <div class="text-justify">
+                                                <div id="post-content<?= $id ?>"></div>
+                                                <script>
+                                                    var el = document.createElement('body')
+                                                    el.innerHTML = '<?= $post->postContent ?>';
+                                                    var Ptags = el.getElementsByTagName('p');
+                                                    for (var x of Ptags) {
+                                                        var wordCount = 0;
+                                                        for (var i = 0; i < x.innerHTML.length; i++) {
+                                                            if (x.innerHTML.charAt(i) == " ") {
+                                                                wordCount++;
+                                                            }
+                                                            if (wordCount >= 50) {
+                                                                var txt = x.innerHTML.substr(0, i);
+                                                                $('#post-content<?= $id ?>').html(txt + "...");
+                                                                break;
+                                                            }
                                                         }
                                                     }
-                                                }
-                                            </script>
+                                                </script>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php }
+                        <?php }
+                    }
                     ?>
                 </div>
             </div>

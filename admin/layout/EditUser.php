@@ -43,7 +43,7 @@ $manager = new ImageManager(array('driver' => 'imagick'));
 </style>
 <body>
 <?php
-    $email = $password = $rePassword = $displayName = $image = "";
+    $email = $password = $rePassword = $displayName = $imagePath = "";
     $mes_email = $mes_password = $mes_rePassword = $mes_displayName = $mess_image = "";
     $dataOK = true;
     $showPass = false; $showPassIcon = "eye";
@@ -59,7 +59,7 @@ $manager = new ImageManager(array('driver' => 'imagick'));
         $email = $user->userEmail;
         //$password = $user->userPassword;
         $displayName = $user->userDisplayName;
-        $image = $user->userImage;
+        $imagePath = $user->userImage;
     }
 
     if(isset($_REQUEST['btnUpdate'])){
@@ -73,7 +73,8 @@ $manager = new ImageManager(array('driver' => 'imagick'));
             $email = $_POST['txtEmail'];
             $rePassword = $_POST['txtRePassword'];
             $displayName = $_POST['txtDisplayName'];
-            $img = $_FILES['txtImage'];
+            $image = $_FILES['txtImage'];
+            $dir = "uploads/profile/";
 
             //processing email
             $email = checkData($email);
@@ -126,35 +127,38 @@ $manager = new ImageManager(array('driver' => 'imagick'));
                 $dataOK = false;
             }
 
-            if(strlen(basename($img['name'])) > 0){
-                $image_type = basename($img['type']);
+            if(strlen(basename($image['name'])) > 0){
+                $image_type = basename($image['type']);
                 if($image_type != "jpg" && $image_type != "jpeg" && $image_type != "png" && $image_type != "bmp"){
                     $mess_image = "Ảnh phải có định dạng jpg, jpeg, png hoặc bmp.";
                     $mess_image .= " Định dạng hiện tại là " . $image_type;
                     $dataOK = false;
                 }
                 else{
-                    $image = "http://localhost:63342/Website/storage/uploads/profile/" . basename($img['name']);
+                    if(file_exists("../storage/" . $dir . basename($image['name']))){
+                        $mess_image = "Ảnh đã tồn tại. Hãy chọn ảnh có tên khác";
+                        $dataOK = false;
+                    }
                 }
             }
 
             if($dataOK){
-                if(strlen(basename($img['name'])) > 0) {
-                    $upload_stat = move_uploaded_file($img['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . "\storage\uploads\profile\\" . basename($img['name']));
+                if(strlen(basename($image['name'])) > 0) {
+                    $upload_stat = move_uploaded_file($image['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . "\storage\uploads\profile\\" . basename($image['name']));
                     // to finally create image instances
-                    $img_tmp = $manager->make($_SERVER['DOCUMENT_ROOT'] . "\storage\uploads\profile\\" . basename($img['name']))->fit(1200);
+                    $img_tmp = $manager->make($_SERVER['DOCUMENT_ROOT'] . "\storage\uploads\profile\\" . basename($image['name']))->fit(1200);
                     $img_tmp->save();
-                    $prefix = "http://localhost:63342/Website";
-                    $filePath = substr($user->userImage, strlen($prefix));
+                    $filePath = "/storage/" . $dir;
                     $filePath = str_replace("/", "\\", $filePath);
                     unlink($_SERVER['DOCUMENT_ROOT'] . $filePath);//also delete the user image
+                    $imagePath = $dir . basename($image['name']);
                 }
                 $user = new User();
                 $user->userId = (int) $_SESSION['userId'];
                 $user->userEmail = $email;
                 $user->userPassword = md5($password);
                 $user->userDisplayName = $displayName;
-                $user->userImage = $image;
+                $user->userImage = $imagePath;
                 $res = $userProvider->updateUser($user);
 
                 unset($_SESSION['user_action']);
@@ -231,7 +235,7 @@ $manager = new ImageManager(array('driver' => 'imagick'));
                                     <label id="file_label" for="txtImage" class="custom-file-label">Chọn file để upload</label>
                                 </div>
                                 <div class="row mx-auto w-50 pt-3">
-                                    <img id="file_image" class="rounded-circle w-100" src="<?= $image ?>" alt="">
+                                    <img id="file_image" class="rounded-circle w-100" src="<?= '../storage/' . $imagePath ?>" alt="">
                                 </div>
                                 <?php
                                 if(strlen($mess_image) > 0){ ?>

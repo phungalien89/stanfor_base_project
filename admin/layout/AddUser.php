@@ -51,7 +51,7 @@
 <?php
 
     $email = $password = $rePassword = $displayName = $image = "";
-    $mes_email = $mes_password = $mes_rePassword = $mes_displayName = $mess_image = "";
+    $mes_email = $mes_password = $mes_rePassword = $mes_displayName = $mes_image = "";
     $dataOK = true;
     $showPass = false; $showPassIcon = "eye";
     $showRePass = false;
@@ -74,17 +74,20 @@
             $rePassword = $_POST['txtRePassword'];
             $displayName = $_POST['txtDisplayName'];
             $image = $_FILES['txtImage'];
+            $dir = "uploads/profile/";
 
             //processing email
             $email = checkData($email);
             if(strlen($email) == 0){
                 $mes_email = "Emai không thể để trống";
+                $_SESSION['message'][] = ['title'=>'Thêm mới người dùng', 'status'=>'danger', 'content'=>"$mes_email"];
                 $dataOK = false;
             }
             else{
                 if(strlen($email) > 50){
                     $mes_email = "Email dài tối đa 50 ký tự";
                     $mes_email .= " Độ dài hiện tại là " . strlen($email) . " ký tự";
+                    $_SESSION['message'][] = ['title'=>'Thêm mới người dùng', 'status'=>'danger', 'content'=>"$mes_email"];
                     $dataOK = false;
                 }
                 else{
@@ -107,23 +110,27 @@
             $password = checkData($password);
             if(strlen($password) == 0){
                 $mes_password = "Mật khẩu không thể để trống";
+                $_SESSION['message'][] = ['title'=>'Thêm mới người dùng', 'status'=>'danger', 'content'=>"$mes_password"];
                 $dataOK = false;
             }
             else{
                 if(strlen($password) < 8){
                     $mes_password = "Mật khẩu dài tối thiểu 8 ký tự";
                     $mes_password .= " Độ dài hiện tại là " . strlen($password) . " ký tự";
+                    $_SESSION['message'][] = ['title'=>'Thêm mới người dùng', 'status'=>'danger', 'content'=>"$mes_password"];
                     $dataOK = false;
                 }
                 else{
                     $rePassword = checkData($rePassword);
                     if(strlen($rePassword) == 0){
                         $mes_rePassword = "Vui lòng nhập lại mật khẩu";
+                        $_SESSION['message'][] = ['title'=>'Thêm mới người dùng', 'status'=>'danger', 'content'=>"$mes_rePassword"];
                         $dataOK = false;
                     }
                     else{
                         if($rePassword !== $password){
                             $mes_rePassword = "Mật khẩu nhập lại không khớp";
+                            $_SESSION['message'][] = ['title'=>'Thêm mới người dùng', 'status'=>'danger', 'content'=>"$mes_rePassword"];
                             $dataOK = false;
                         }
                     }
@@ -134,14 +141,23 @@
             if(strlen($displayName) > 50){
                 $mes_displayName = "Tên hiển thị dài tối đa 50 ký tự";
                 $mes_displayName .= " Độ dài hiện tại là " . strlen($displayName) . " ký tự";
+                $_SESSION['message'][] = ['title'=>'Thêm mới người dùng', 'status'=>'danger', 'content'=>"$mes_displayName"];
                 $dataOK = false;
             }
 
             $image_type = basename($image['type']);
             if($image_type != "jpg" && $image_type != "jpeg" && $image_type != "png" && $image_type != "bmp"){
-                $mess_image = "Ảnh phải có định dạng jpg, jpeg, png hoặc bmp";
-                $mess_image .= " Định dạng hiện tại là " . $image_type;
+                $mes_image = "Ảnh phải có định dạng jpg, jpeg, png hoặc bmp";
+                $mes_image .= " Định dạng hiện tại là " . $image_type;
+                $_SESSION['message'][] = ['title'=>'Thêm mới người dùng', 'status'=>'danger', 'content'=>"$mes_image"];
                 $dataOK = false;
+            }
+            else{
+                if(file_exists("../storage/" . $dir . basename($image['name']))){
+                    $mes_image = "Ảnh đã tồn tại. Hãy chọn ảnh có tên khác";
+                    $_SESSION['message'][] = ['title'=>'Thêm mới người dùng', 'status'=>'danger', 'content'=>"$mes_image"];
+                    $dataOK = false;
+                }
             }
 
             if($dataOK){
@@ -151,7 +167,7 @@
                 $user->userEmail = $email;
                 $user->userPassword = md5($password);
                 $user->userDisplayName = $displayName;
-                $user->userImage = "http://localhost:63342/Website/storage/uploads/profile/" . basename($image['name']);
+                $user->userImage = $dir . basename($image['name']);
                 $userProvider->addUser($user);
 
                 // to finally create image instances
@@ -234,8 +250,8 @@
                                     <img id="file_image" class="rounded-circle w-100" src="" alt="">
                                 </div>
                                 <?php
-                                if(strlen($mess_image) > 0){ ?>
-                                    <div class="invalid-feedback d-block"><?= $mess_image ?></div>
+                                if(strlen($mes_image) > 0){ ?>
+                                    <div class="invalid-feedback d-block"><?= $mes_image ?></div>
                                 <?php }
                                 ?>
                             </div>

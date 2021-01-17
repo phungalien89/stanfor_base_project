@@ -211,7 +211,7 @@
 ?>
     <div class="container">
         <div class="row pt-4">
-            <div class="col-sm-10 col-md-8 col-lg-6 mx-auto">
+            <div class="col-sm-12 col-md-10 col-lg-10 mx-auto">
                 <div class="card shadow">
                     <div class="card-header bg-primary text-light text-center">
                         <h3>CHỈNH SỬA BÀI ĐĂNG</h3>

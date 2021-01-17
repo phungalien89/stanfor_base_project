@@ -1,4 +1,4 @@
-<?php
+<?php session_start();
     spl_autoload_register(function($class_name){
         include "admin/" . $class_name . ".php";
     });
@@ -45,7 +45,10 @@ use Intervention\Image\ImageManager;
 $manager = new ImageManager(array('driver' => 'imagick'));
 
 ?>
-<?php include_once "layout/navbar.php" ?>
+<?php
+    //include_once "layout/navbar.php";
+    include "inc/message.php";
+?>
 <?php
     $email = $password = $rePassword = $displayName = $image = "";
     $mes_email = $mes_password = $mes_rePassword = $mes_displayName = $mess_image = "";
@@ -139,16 +142,17 @@ $manager = new ImageManager(array('driver' => 'imagick'));
             if($dataOK){
                 $upload_stat = move_uploaded_file($image['tmp_name'], "storage/uploads/profile/" . basename($image['name']));
                 // to finally create image instances
-                $image = $manager->make($_SERVER['DOCUMENT_ROOT'] . "\storage\uploads\profile\\" . basename($image['name']))->fit(1200);
-                $image->save();
+                $img = $manager->make($_SERVER['DOCUMENT_ROOT'] . "\storage\uploads\profile\\" . basename($image['name']))->fit(1200);
+                $img->save();
 
                 $user = new User();
                 $user->userEmail = $email;
                 $user->userPassword = md5($password);
                 $user->userDisplayName = $displayName;
-                $user->userImage = "http://localhost:63342/Website/storage/uploads/profile/" . basename($image['name']);
+                $user->userImage = "storage/uploads/profile/" . basename($image['name']);
                 $res = $userProvider->addUser($user);
-                header("location:http://localhost:63342/Website/HomePage.php");
+                $_SESSION['message'][] = ['title'=>'Đăng ký người dùng', 'status'=>'success', 'content'=>'Đã dăng ký <b>'. $user->userDisplayName .'</b> thành công!'];
+                header("location:login.php");
             }
 
         }

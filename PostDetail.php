@@ -277,7 +277,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <?php
                             foreach($posts as $id => $post){ ?>
                                 <div class="post-container p-2 border my-2 rounded">
-                                    <a href="http://localhost:63342/Website/PostDetail.php?postId=<?= $post->postId ?>" class="stretched-link"></a>
+                                    <a href="PostDetail.php?postId=<?= $post->postId ?>" class="stretched-link"></a>
                                     <img class="img-thumbnail mr-2" style="width: 100px; float: left;" src="<?= $post->postImage ?>" alt="<?= $post->postImage ?>">
                                     <div class="post-body">
                                         <div class="font-weight-bold" style="font-size: 1.15em;"><?= $post->postTitle ?></div>

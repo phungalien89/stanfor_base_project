@@ -1,12 +1,12 @@
 
 <div class="headertop_desc">
     <?php
-        include "layout/navbar.php";
+        //include "layout/navbar.php";
     ?>
 </div>
 <div class="header_top">
     <div class="logo">
-        <a href="index.html"><img src="images/logo.png" alt="" /></a>
+        <a href="http://localhost:63342/Website/HomePage.php"><img src="images/logo.png" alt="" /></a>
     </div>
     <script type="text/javascript">
         function DropDown(el) {

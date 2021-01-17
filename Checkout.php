@@ -282,13 +282,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             $dataOK = false;
         }
         else{
-            $encoded_address = str_replace(", ", "+", $address);
-            $encoded_address = str_replace(" ", "%20", $encoded_address);
-            $url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=$encoded_address&key=AIzaSyBuURuyU9pV82S4sQpfo6c3OaYGyX26mYU&inputtype=textquery";
+            $url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=". urlencode($address) ."&key=AIzaSyBuURuyU9pV82S4sQpfo6c3OaYGyX26mYU&inputtype=textquery";
             $response = file_get_contents($url);
 
             $arr = json_decode($response, true);
-            //var_dump($arr);
+            var_dump($url);
             /*var_dump("Place ID = " . $arr['candidates'][0]['place_id']);
             var_dump("Search result = " . $arr['status']);*/
             $status = $arr['status'];
@@ -299,13 +297,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             else{
                 $mes_address = "Địa chỉ bạn nhập không có trên Trái Đất";
                 $dataOK = false;
-                $dataOK = false;
             }
         }
 
         $mobile = checkData($mobile);
         if(strlen($mobile) == 0){
             $mes_mobile = "Số điện thoại không thể để trống";
+            $dataOK = false;
         }
         else{
             $matched = preg_match("/[0-9]{10,11}+/", $mobile);
@@ -462,7 +460,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
         }
     }
-    //var_dump($place_id);
+    //var_dump($carts);
 ?>
 <div class="wrap">
     <div class="header">
@@ -633,14 +631,23 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     }
     var loadedMap = '<?= isset($_SESSION['loadedMap']) ? 'true' : 'false' ?>';
     if(loadedMap == "false" ){
-        $.getJSON("https://geolocation-db.com/json/")
+        /*$.getJSON("https://geolocation-db.com/json/")
             .done((locate)=>{
                 var map = '<iframe width="100%" height="350" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBuURuyU9pV82S4sQpfo6c3OaYGyX26mYU&q='+ locate.latitude + ',' + locate.longitude +'" allowfullscreen></iframe>';
                 $('#Gmap').html(map);
                 var httpRequest = new XMLHttpRequest();
-                httpRequest.open("POST", "http://localhost:63342/Website/admin/geolocation.php?loadedMap=OK", true);
+                httpRequest.open("POST", "admin/geolocation.php?loadedMap=OK", true);
+                httpRequest.send();
+            });*/
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition((loc)=>{
+                var map = '<iframe width="100%" height="350" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBuURuyU9pV82S4sQpfo6c3OaYGyX26mYU&q='+ loc.coords.latitude + ',' + loc.coords.longitude +'" allowfullscreen></iframe>';
+                $('#Gmap').html(map);
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.open("POST", "admin/geolocation.php?loadedMap=OK", true);
                 httpRequest.send();
             });
+        }
     }
 
     $(document).ready(()=>{

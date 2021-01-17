@@ -136,7 +136,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     }
     .bikeType_container input:checked + label:after{
         content: "";
-        background-image: url("http://localhost:63342/Website/asset/img/checked_icon_top_right_01.png");
+        background-image: url("asset/img/checked_icon_top_right_01.png");
         background-size: 100% 100%;
         width: 23px;
         height: 20px;
@@ -247,12 +247,16 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             case "newBike":
                 if(strlen($query) == 0){
                     $arrBikes = $bikeMan->getNewBikes();
+                    $countPage = count($arrBikes);
+                    $arrBikes = $bikeMan->getNewBikes(8 * ($currentPage-1));
                     $queryDesc = "Sản phẩm mới";
                 }
                 break;
             case "promoteBike":
                 if(strlen($query) == 0){
                     $arrBikes = $bikeMan->getPromotedBikes();
+                    $countPage = count($arrBikes);
+                    $arrBikes = $bikeMan->getPromotedBikes(8 * ($currentPage-1));
                     $queryDesc = "Đang khuyến mãi";
                 }
                 break;
@@ -260,7 +264,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 if(strlen($query) == 0){
                     $_SESSION['pageNum'] = 1;
                     $q1 = "q=" . $q;
-                    $arrBikes = $bikeMan->getBikesByQuery($q1, 'default', 'default');
+                    $arrBikes = $bikeMan->getBikesByQuery($q1, 'default', 'default', 'default');
+                    $countPage = count($arrBikes);
+                    $arrBikes = $bikeMan->getBikesByQuery($q1, 'default', 'default', 8 * ($currentPage-1));
                     $queryDesc = "Tìm kiếm";
                 }
                 break;
@@ -269,18 +275,25 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
     if(strlen($query) > 0){
         if($_REQUEST['q'] == "newBike"){
-            $arrBikes = $bikeMan->getBikesByQuery($query, $_SESSION['sortType'] ?? 'default', 'new');
+            $arrBikes = $bikeMan->getBikesByQuery($query, $_SESSION['sortType'] ?? 'default', 'new', 'all');
+            $countPage = count($arrBikes);
+            $arrBikes = $bikeMan->getBikesByQuery($query, $_SESSION['sortType'] ?? 'default', 'new', 8 * ($currentPage-1));
         }
         else if($_REQUEST['q'] == "promoteBike"){
-            $arrBikes = $bikeMan->getBikesByQuery($query, $_SESSION['sortType'] ?? 'default', 'promote');
+            $arrBikes = $bikeMan->getBikesByQuery($query, $_SESSION['sortType'] ?? 'default', 'promote', 'all');
+            $countPage = count($arrBikes);
+            $arrBikes = $bikeMan->getBikesByQuery($query, $_SESSION['sortType'] ?? 'default', 'promote', 8 * ($currentPage-1));
         }
         else{
             $q1 = "q=" . $_REQUEST['q'] . "&" . $query;
-            $arrBikes = $bikeMan->getBikesByQuery($q1, $_SESSION['sortType'] ?? 'default');
+            $arrBikes = $bikeMan->getBikesByQuery($q1, $_SESSION['sortType'] ?? 'default', 'default', 'all');
+            $countPage = count($arrBikes);
+            $arrBikes = $bikeMan->getBikesByQuery($q1, $_SESSION['sortType'] ?? 'default', 'default', 8 * ($currentPage-1));
         }
     }
 
     //Nếu thay đổi sắp xếp
+    $countPage = 0;
     if(isset($_REQUEST['comboSort']) || isset($_SESSION['sortType'])){
         $sortType = $_POST['comboSort'] ?? $_SESSION['sortType'];
         $_SESSION['sortType'] = $sortType;
@@ -288,31 +301,43 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         switch ($q){
             case "newBike":
                 if(strlen($query) > 0){
-                    $arrBikes = $bikeMan->getBikesByQuery($query, $sortType, 'new');
+                    $arrBikes = $bikeMan->getBikesByQuery($query, $sortType, 'new', 'all');
+                    $countPage = count($arrBikes);
+                    $arrBikes = $bikeMan->getBikesByQuery($query, $sortType, 'new', 8 * ($currentPage-1));
                 }
                 else{
-                    $arrBikes = $bikeMan->getNewBikes($sortType);
+                    $arrBikes = $bikeMan->getNewBikes('all', $sortType);
+                    $countPage = count($arrBikes);
+                    $arrBikes = $bikeMan->getNewBikes(8 * ($currentPage-1), $sortType);
                 }
                 $queryDesc = "Sản phẩm mới";
                 break;
             case "promoteBike":
                 if(strlen($query) > 0){
-                    $arrBikes = $bikeMan->getBikesByQuery($query, $sortType, 'promote');
+                    $arrBikes = $bikeMan->getBikesByQuery($query, $sortType, 'promote', 'all');
+                    $countPage = count($arrBikes);
+                    $arrBikes = $bikeMan->getBikesByQuery($query, $sortType, 'promote', 8 * ($currentPage-1));
                 }
                 else{
-                    $arrBikes = $bikeMan->getPromotedBikes($sortType);
+                    $arrBikes = $bikeMan->getPromotedBikes('all', $sortType);
+                    $countPage = count($arrBikes);
+                    $arrBikes = $bikeMan->getPromotedBikes(8 * ($currentPage-1), $sortType);
                 }
                 $queryDesc = "Đang khuyến mãi";
                 break;
             default:
                 if(strlen($query) > 0){
                     $q1 = "q=" . $_REQUEST['q'] . "&" . $query;
-                    $arrBikes = $bikeMan->getBikesByQuery($q1, $sortType, 'default');
+                    $arrBikes = $bikeMan->getBikesByQuery($q1, $sortType, 'default', 'all');
+                    $countPage = count($arrBikes);
+                    $arrBikes = $bikeMan->getBikesByQuery($q1, $sortType, 'default', 8 * ($currentPage-1));
                     $queryDesc = "Tìm kiếm";
                 }
                 else{
                     $q1 = "q=" . $q;
-                    $arrBikes = $bikeMan->getBikesByQuery($q1, $sortType, 'default');
+                    $arrBikes = $bikeMan->getBikesByQuery($q1, $sortType, 'default', 'all');
+                    $countPage = count($arrBikes);
+                    $arrBikes = $bikeMan->getBikesByQuery($q1, $sortType, 'default', 8 * ($currentPage-1));
                     $queryDesc = "Tìm kiếm";
                 }
                 break;
@@ -322,6 +347,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     if(isset($_SESSION['pageNum'])){
         $currentPage = (int) $_SESSION['pageNum'];
     }
+    //var_dump($query);
 ?>
 <div class="wrap">
     <div class="header">
@@ -365,7 +391,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 </div>
                 <div class="col-sm-8">
                     <?php
-                    if(count($arrBikes) > 7){ ?>
+                    if($countPage > 7){ ?>
                         <ul class="pagination pt-3 justify-content-end">
                             <li class="page-item <?= $currentPage == 1 ? 'disabled' : '' ?>">
                                 <a id="pageLinkTopPrev" href="" class="page-link">
@@ -373,8 +399,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                 </a>
                             </li>
                             <?php
-                            $pageNum = floor(count($arrBikes) / 8);
-                            $pageNum += 1;
+                            $pageNum = floor($countPage / 8);
+                            if($countPage % 8 > 0){
+                                $pageNum += 1;
+                            }
                             for($i = 0; $i < $pageNum; $i++){ ?>
                                 <li class="page-item <?= $currentPage == ($i + 1) ? 'active' : '' ?>">
                                     <a id="pageLinkTop<?= $i ?>" href="" class="page-link">
@@ -386,7 +414,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                     $('#pageLinkTop<?= $i ?>').on("click", (e)=>{
                                         e.preventDefault();
                                         var httpRequest = new XMLHttpRequest();
-                                        var q_str = "http://localhost:63342/Website/admin/setPageNumber.php?pageNum=<?= $i+1 ?>&selection=<?= implode("|", $arr_name_type) . "|" . implode("|", $arr_name_brand) ?>";
+                                        var q_str = "admin/setPageNumber.php?pageNum=<?= $i+1 ?>&selection=<?= implode("|", $arr_name_type) . "|" . implode("|", $arr_name_brand) ?>";
                                         httpRequest.onreadystatechange = ()=>{
                                             if(httpRequest.readyState == 4 && httpRequest.status == 200){
                                                 location.assign('<?= $_SERVER['PHP_SELF'] ?>?<?= $_SERVER['QUERY_STRING'] ?>');
@@ -407,7 +435,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                 $('#pageLinkTopPrev').on("click", (e)=>{
                                     e.preventDefault();
                                     var httpRequest = new XMLHttpRequest();
-                                    var q_str = "http://localhost:63342/Website/admin/setPageNumber.php?pageNum=<?= $currentPage - 1 ?>&selection=<?= implode("|", $arr_name_type) . "|" . implode("|", $arr_name_brand) ?>";
+                                    var q_str = "admin/setPageNumber.php?pageNum=<?= $currentPage - 1 ?>&selection=<?= implode("|", $arr_name_type) . "|" . implode("|", $arr_name_brand) ?>";
                                     httpRequest.onreadystatechange = ()=>{
                                         if(httpRequest.readyState == 4 && httpRequest.status == 200){
                                             location.assign('<?= $_SERVER['PHP_SELF'] ?>?<?= $_SERVER['QUERY_STRING'] ?>');
@@ -419,7 +447,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                 $('#pageLinkTopNext').on("click", (e)=>{
                                     e.preventDefault();
                                     var httpRequest = new XMLHttpRequest();
-                                    var q_str = "http://localhost:63342/Website/admin/setPageNumber.php?pageNum=<?= $currentPage + 1 ?>&selection=<?= implode("|", $arr_name_type) . "|" . implode("|", $arr_name_brand) ?>";
+                                    var q_str = "admin/setPageNumber.php?pageNum=<?= $currentPage + 1 ?>&selection=<?= implode("|", $arr_name_type) . "|" . implode("|", $arr_name_brand) ?>";
                                     httpRequest.onreadystatechange = ()=>{
                                         if(httpRequest.readyState == 4 && httpRequest.status == 200){
                                             location.assign('<?= $_SERVER['PHP_SELF'] ?>?<?= $_SERVER['QUERY_STRING'] ?>');
@@ -477,9 +505,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                     ?>
                                     <div class="<?= strtotime($bike->dateModified) > $fiveDays_ago ? 'new-product' : ''?>"></div>
                                     <div class="card-body position-relative">
-                                        <a href="http://localhost:63342/Website/BikeDetail.php?bikeId=<?= $bike->bikeId ?>" class="stretched-link"></a>
+                                        <a href="BikeDetail.php?bikeId=<?= $bike->bikeId ?>" class="stretched-link"></a>
                                         <div style="<?= $bike->bikeDiscountPrice == 0 ? 'color: transparent' : '' ?>" class="price discount text-center"><?= formatPrice($bike->bikePrice) ?> &#8363;</div>
-                                        <img class="mx-auto w-100" src="<?= $bike->bikeImage ?>" alt="<?= $bike->bikeImage ?>" />
+                                        <img class="mx-auto w-100" src="storage/<?= $bike->bikeImage ?>" alt="<?= $bike->bikeImage ?>" />
                                         <div class="text-center font-weight-bold" style="font-size: 1.25em; color: #009688;"><?= $bike->bikeName ?></div>
                                         <?php
                                         if($bike->bikeDiscountPrice == 0){ ?>
@@ -507,7 +535,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                                         }
                                                     };
                                                     var q = "&selection=<?= $query ?>";
-                                                    httpRequest.open("POST", "http://localhost:63342/Website/AddToCart.php?addToCart=<?= $bike->bikeId ?>" + q, true);
+                                                    httpRequest.open("POST", "AddToCart.php?addToCart=<?= $bike->bikeId ?>" + q, true);
                                                     httpRequest.send();
                                                 });
                                                 $('#btnAddWishFilter<?= $bike->bikeId ?>').on("click", ()=>{
@@ -518,7 +546,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                                         }
                                                     };
                                                     var q = "&selection=<?= $query ?>";
-                                                    httpRequest.open("POST", "http://localhost:63342/Website/AddToWish.php?addToWish=<?= $bike->bikeId ?>" + q, true);
+                                                    httpRequest.open("POST", "AddToWish.php?addToWish=<?= $bike->bikeId ?>" + q, true);
                                                     httpRequest.send();
                                                 });
 

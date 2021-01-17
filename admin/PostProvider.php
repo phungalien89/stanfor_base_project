@@ -65,6 +65,7 @@ class PostProvider extends DataProvider
     {
         $conn = $this->connect();
         $arr_post = [];
+        $postTag = str_replace(",", "", $postTag);
         $arrTag = explode(" ", $postTag);
         $cmd = "SELECT * FROM post WHERE 1=1 AND ";
         foreach ($arrTag as $id => $tag){

@@ -132,7 +132,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     }
     .bikeType_container input:checked + label:after{
         content: "";
-        background-image: url("http://localhost:63342/Website/asset/img/checked_icon_top_right_01.png");
+        background-image: url("asset/img/checked_icon_top_right_01.png");
         background-size: 100% 100%;
         width: 23px;
         height: 20px;
@@ -302,7 +302,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                             </li>
                             <?php
                             $pageNum = floor(count($arrBikes) / 8);
-                            $pageNum += 1;
+                            if(count($arrBikes) % 8 > 0){
+                                $pageNum += 1;
+                            }
                             for($i = 0; $i < $pageNum; $i++){ ?>
                                 <li class="page-item <?= $currentPage == ($i + 1) ? 'active' : '' ?>">
                                     <a id="pageLinkTop<?= $i ?>" href="" class="page-link">
@@ -314,7 +316,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                     $('#pageLinkTop<?= $i ?>').on("click", (e)=>{
                                         e.preventDefault();
                                         var httpRequest = new XMLHttpRequest();
-                                        var q_str = "http://localhost:63342/Website/admin/setPageNumber.php?pageNum=<?= $i+1 ?>&selection=<?= implode("|", $arr_name_type) . "|" . implode("|", $arr_name_brand) ?>";
+                                        var q_str = "admin/setPageNumber.php?pageNum=<?= $i+1 ?>&selection=<?= implode("|", $arr_name_type) . "|" . implode("|", $arr_name_brand) ?>";
                                         httpRequest.onreadystatechange = ()=>{
                                             if(httpRequest.readyState == 4 && httpRequest.status == 200){
                                                 location.assign('<?= $_SERVER['PHP_SELF'] ?>?<?= $_SERVER['QUERY_STRING'] ?>');
@@ -335,7 +337,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                 $('#pageLinkTopPrev').on("click", (e)=>{
                                     e.preventDefault();
                                     var httpRequest = new XMLHttpRequest();
-                                    var q_str = "http://localhost:63342/Website/admin/setPageNumber.php?pageNum=<?= $currentPage - 1 ?>&selection=<?= implode("|", $arr_name_type) . "|" . implode("|", $arr_name_brand) ?>";
+                                    var q_str = "admin/setPageNumber.php?pageNum=<?= $currentPage - 1 ?>&selection=<?= implode("|", $arr_name_type) . "|" . implode("|", $arr_name_brand) ?>";
                                     httpRequest.onreadystatechange = ()=>{
                                         if(httpRequest.readyState == 4 && httpRequest.status == 200){
                                             location.assign('<?= $_SERVER['PHP_SELF'] ?>?<?= $_SERVER['QUERY_STRING'] ?>');
@@ -347,7 +349,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                 $('#pageLinkTopNext').on("click", (e)=>{
                                     e.preventDefault();
                                     var httpRequest = new XMLHttpRequest();
-                                    var q_str = "http://localhost:63342/Website/admin/setPageNumber.php?pageNum=<?= $currentPage + 1 ?>&selection=<?= implode("|", $arr_name_type) . "|" . implode("|", $arr_name_brand) ?>";
+                                    var q_str = "admin/setPageNumber.php?pageNum=<?= $currentPage + 1 ?>&selection=<?= implode("|", $arr_name_type) . "|" . implode("|", $arr_name_brand) ?>";
                                     httpRequest.onreadystatechange = ()=>{
                                         if(httpRequest.readyState == 4 && httpRequest.status == 200){
                                             location.assign('<?= $_SERVER['PHP_SELF'] ?>?<?= $_SERVER['QUERY_STRING'] ?>');
@@ -428,7 +430,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                     ?>
                                     <div class="<?= strtotime($bike->dateModified) > $fiveDays_ago ? 'new-product' : '' ?>"></div>
                                     <div class="card-body position-relative">
-                                        <a href="http://localhost:63342/Website/BikeDetail.php?bikeId=<?= $bike->bikeId ?>"
+                                        <a href="BikeDetail.php?bikeId=<?= $bike->bikeId ?>"
                                            class="stretched-link"></a>
                                         <div style="<?= $bike->bikeDiscountPrice == 0 ? 'color: transparent' : '' ?>"
                                              class="price discount text-center"><?= formatPrice($bike->bikePrice) ?>
@@ -471,7 +473,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                                         }
                                                     };
                                                     var q = "&selection=" + "<?= implode('|', $arr_name_type) ?>" + "|" + "<?= implode('|', $arr_name_brand) ?>";
-                                                    httpRequest.open("POST", "http://localhost:63342/Website/AddToCart.php?addToCart=<?= $bike->bikeId ?>" + q, true);
+                                                    httpRequest.open("POST", "AddToCart.php?addToCart=<?= $bike->bikeId ?>" + q, true);
                                                     httpRequest.send();
                                                 });
                                                 $('#btnAddWishFilter<?= $bike->bikeId ?>').on("click", () => {
@@ -482,7 +484,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                                         }
                                                     };
                                                     var q = "&selection=" + "<?= implode('|', $arr_name_type) ?>" + "|" + "<?= implode('|', $arr_name_brand) ?>";
-                                                    httpRequest.open("POST", "http://localhost:63342/Website/AddToWish.php?addToWish=<?= $bike->bikeId ?>" + q, true);
+                                                    httpRequest.open("POST", "AddToWish.php?addToWish=<?= $bike->bikeId ?>" + q, true);
                                                     httpRequest.send();
                                                 });
 

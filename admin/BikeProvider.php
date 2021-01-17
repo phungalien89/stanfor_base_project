@@ -44,19 +44,22 @@ class BikeProvider extends DataProvider
     /**
      * Get info of all new 10 bikes
     */
-    public function getNewBikes($sort = 'default') : iterable
+    public function getNewBikes($num = 'all', $sort = 'default') : iterable
     {
         $arrBike = [];
 
         $conn = $this->connect();
-        //Select all bikes from 10 days ago until now
-        $cmd = "SELECT * FROM bike WHERE dateModified > (DATE_SUB(CURRENT_DATE, INTERVAL 10 DAY)) ";
-
+        //Select all bikes from 5 days ago until now
+        $cmd = "SELECT * FROM bike WHERE dateModified > (DATE_SUB(CURRENT_DATE, INTERVAL 5 DAY)) ";
+        if($num != 'all'){
+            $cmd .= " LIMIT 8 OFFSET " . (int) $num;
+        }
         if($sort != 'default'){
             $arr_sort = explode("_", $sort);
             $dir = $arr_sort[1] == "up" ? 'ASC' : 'DESC';
             $cmd .= " ORDER BY bikePrice " . $dir;
         }
+        //print_r($cmd);
         $res = mysqli_query($conn, $cmd);
         while($row = mysqli_fetch_array($res)){
             $bike = new Bike();
@@ -86,19 +89,22 @@ class BikeProvider extends DataProvider
     /**
      * Get info of all new 10 bikes
     */
-    public function getPromotedBikes($sort = 'default') : iterable
+    public function getPromotedBikes($num = 'all', $sort = 'default') : iterable
     {
         $arrBike = [];
 
         $conn = $this->connect();
         //Select all bikes from 10 days ago until now
         $cmd = "SELECT * FROM bike WHERE bikeDiscountPrice > 0 ";
-
+        if($num != 'all'){
+            $cmd .= " LIMIT 8 OFFSET " . (int) $num;
+        }
         if($sort != 'default'){
             $arr_sort = explode("_", $sort);
             $dir = $arr_sort[1] == "up" ? 'ASC' : 'DESC';
             $cmd .= " ORDER BY bikePrice " . $dir;
         }
+
         $res = mysqli_query($conn, $cmd);
         while($row = mysqli_fetch_array($res)){
             $bike = new Bike();
@@ -168,7 +174,7 @@ class BikeProvider extends DataProvider
      * @param $query: keyword to filter
      * @param $sort: sort option
      */
-    public function getBikesByQuery($query, $sort='default', $action='default') : iterable
+    public function getBikesByQuery($query, $sort='default', $action='default', $num='all') : iterable
     {
         $arrBikes = [];
         $conn = $this->connect();
@@ -267,6 +273,9 @@ class BikeProvider extends DataProvider
                 $cmd .= " AND bikeDiscountPrice > 0";
             }
         }*/
+        if($num != 'all'){
+            $cmd .= " LIMIT 8 OFFSET " . (int) $num;
+        }
         if($sort != 'default'){
             $arr_sort = explode("_", $sort);
             $dir = $arr_sort[1] == "up" ? 'ASC' : 'DESC';

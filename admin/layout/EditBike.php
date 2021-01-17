@@ -182,17 +182,20 @@
             $bikeSpecs = $_POST['txtBikeSpecs'];
             $bikeGallery = $_POST['txtBikeGallery'];
             $image = $_FILES['txtBikeImage'];
+            $dir = "uploads/bike/";
 
             //processing bikeName
             $bikeName = checkData($bikeName);
             if(strlen($bikeName) == 0){
                 $mes_bike_name = "Tên xe không thể để trống";
+                $_SESSION['message'][] = ['title'=>'Cập nhật sản phẩm', 'status'=>'danger', 'content'=>"$mes_bike_name"];
                 $dataOK = false;
             }
             else{
                 if(strlen($bikeName) > 50){
                     $mes_bike_name = "Tên xe dài tối đa 50 ký tự";
                     $mes_bike_name .= " Độ dài hiện tại là " . strlen($bikeName) . " ký tự";
+                    $_SESSION['message'][] = ['title'=>'Cập nhật sản phẩm', 'status'=>'danger', 'content'=>"$mes_bike_name"];
                     $dataOK = false;
                 }
             }//bikeName
@@ -201,12 +204,14 @@
             $bikePrice = checkData($bikePrice);
             if(strlen($bikePrice) == 0){
                 $mes_bike_price = "Giá không thể để trống";
+                $_SESSION['message'][] = ['title'=>'Cập nhật sản phẩm', 'status'=>'danger', 'content'=>"$mes_bike_price"];
                 $dataOK = false;
             }
             else{
                 if(strlen($bikePrice) > 12){
                     $mes_bike_price = "Giá dài tối đa 12 ký tự";
                     $mes_bike_price .= " Độ dài hiện tại là " . strlen($bikePrice) . " ký tự";
+                    $_SESSION['message'][] = ['title'=>'Cập nhật sản phẩm', 'status'=>'danger', 'content'=>"$mes_bike_price"];
                     $dataOK = false;
                 }
 
@@ -217,23 +222,22 @@
             if(strlen($bikeDiscountPrice) > 12){
                 $mes_bike_discount_price = "Giá chiết khấu dài tối đa 12 ký tự";
                 $mes_bike_discount_price .= " Độ dài hiện tại là " . strlen($bikeDiscountPrice) . " ký tự";
+                $_SESSION['message'][] = ['title'=>'Cập nhật sản phẩm', 'status'=>'danger', 'content'=>"$mes_bike_discount_price"];
                 $dataOK = false;
             }//bikeDiscountPrice
-
-
-
 
             $image_type = basename($image['type']);
             if(strlen(basename($image['name'])) > 0){
                 if($image_type != "jpg" && $image_type != "jpeg" && $image_type != "png" && $image_type != "bmp"){
                     $mess_bike_image = "Ảnh phải có định dạng jpg, jpeg, png hoặc bmp";
                     $mess_bike_image .= " Định dạng hiện tại là " . $image_type;
+                    $_SESSION['message'][] = ['title'=>'Cập nhật sản phẩm', 'status'=>'danger', 'content'=>"$mes_bike_image"];
                     $dataOK = false;
                 }
                 else{
-                    $file = $_SERVER['DOCUMENT_ROOT'] . "\storage\uploads\bike\\" . basename($image['name']);
-                    if(file_exists($file)){
-                        $mes_bike_image = "File đã tồn tại. Hãy chọn file có tên khác.";
+                    if(file_exists("../storage/" . $dir . basename($image['name']))){
+                        $mes_bike_image = "Ảnh đại diện đã tồn tại. Hãy chọn ảnh có tên khác";
+                        $_SESSION['message'][] = ['title'=>'Cập nhật sản phẩm', 'status'=>'danger', 'content'=>"$mes_bike_image"];
                         $dataOK = false;
                     }
                 }
@@ -248,11 +252,10 @@
                     $img = $manager->make($_SERVER['DOCUMENT_ROOT'] . "\storage\uploads\bike\\" . basename($image['name']))->fit(1200);
                     $img->save();
 
-                    $prefix = "http://localhost:63342/Website";
-                    $filePath = substr($bikeImage, strlen($prefix));
+                    $filePath = "/storage/" . $dir . $bikeImage;
                     $filePath = str_replace("/", "\\", $filePath);
                     unlink($_SERVER['DOCUMENT_ROOT'] . $filePath);//also delete the bike image
-                    $bikeImage = $prefix . "/storage/uploads/bike/" . basename($image['name']);
+                    $bikeImage = $dir . basename($image['name']);
                 }
 
                 $bike = new Bike();
@@ -281,7 +284,7 @@
 ?>
     <div class="container">
         <div class="row pt-4">
-            <div class="col-sm-10 col-md-10 col-lg-8 mx-auto">
+            <div class="col-sm-12 col-md-10 col-lg-10 mx-auto">
                 <div class="card shadow">
                     <div class="card-header bg-primary text-light text-center">
                         <h3>CẬP NHẬT SẢN PHẨM</h3>
@@ -506,7 +509,7 @@
                                     <label id="bike_file_label" for="txtBikeImage" class="custom-file-label">Chọn file để upload</label>
                                 </div>
                                 <div class="row mx-auto w-50 pt-3">
-                                    <img id="bike_file_image" class="rounded-circle w-100" src="<?= $bikeImage ?>" alt="<?= $bikeImage ?>">
+                                    <img id="bike_file_image" class="rounded-circle w-100" src="<?= '../storage/' . $bikeImage ?>" alt="<?= $bikeImage ?>">
                                 </div>
                                 <?php
                                 if(strlen($mes_bike_image) > 0){ ?>

@@ -19,8 +19,7 @@ spl_autoload_register(function($class_name){
         $userId = (int) $_POST['userId'];
         $usr = $userProvider->getUserById($userId);//For show the deleted name
         $userProvider->deleteUser($userId);
-        $prefix = "http://localhost:63342/Website";
-        $filePath = substr($usr->userImage, strlen($prefix));
+        $filePath = "/storage/" . $usr->userImage;
         $filePath = str_replace("/", "\\", $filePath);
         unlink($_SERVER['DOCUMENT_ROOT'] . $filePath);//also delete the user image
         unset($_SESSION['user_action']);
@@ -73,7 +72,7 @@ spl_autoload_register(function($class_name){
                             <div class="hover-scale" style="width: 80px">
                                 <?php
                                     if(strlen($user->userImage) > 0){ ?>
-                                        <img class="img-thumbnail w-100" src="<?= $user->userImage ?>" alt="">
+                                        <img class="img-thumbnail w-100" src="../storage/<?= $user->userImage ?>" alt="">
                                     <?php }
                                 ?>
                             </div>

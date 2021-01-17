@@ -2,7 +2,7 @@
     .floating-box-right{
         position: fixed;
         bottom: 0;
-        right: 1em;
+        right: 0.5em;
         padding: 3em 1.5em;
         z-index: 3;
     }
@@ -37,7 +37,7 @@
     $(document).ready(()=>{
         $('#arrow_up').on("click", (e)=> {
             e.preventDefault();
-            $('html, body').animate({scrollTop: 0}, 600, 'swing');
+            $('html, body').animate({scrollTop: 0}, 600);
         });
     });
 </script>
