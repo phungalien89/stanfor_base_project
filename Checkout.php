@@ -282,7 +282,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             $dataOK = false;
         }
         else{
-            $url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=". urlencode($address) ."&key=AIzaSyBuURuyU9pV82S4sQpfo6c3OaYGyX26mYU&inputtype=textquery";
+            $url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=". urlencode($address) ."&key=add_your_api_key_here&inputtype=textquery";
             $response = file_get_contents($url);
 
             $arr = json_decode($response, true);
