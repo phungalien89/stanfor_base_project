@@ -92,7 +92,7 @@ spl_autoload_register(function($class_name){
                             <div class="hover-scale" style="width: 80px">
                                 <?php
                                     if(strlen($brand->brandLogo) > 0){ ?>
-                                        <img class="img-thumbnail w-100" src="<?= $brand->brandLogo ?>" alt="">
+                                        <img class="img-thumbnail w-100" src="../storage/<?= $brand->brandLogo ?>" alt="../storage/<?= $brand->brandLogo ?>">
                                     <?php }
                                 ?>
                             </div>

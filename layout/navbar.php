@@ -97,7 +97,7 @@
                                         <div class="col-10">
                                             <a href="http://localhost:63342/Website/BikeDetail.php?bikeId=<?= $bikeNavBarId ?>" class="stretched-link"></a>
                                             <div class="mr-2" style="width: 80px; float: left">
-                                                <img class="w-100 img-thumbnail" src="<?= $bikeNavBar->bikeImage ?>" alt="">
+                                                <img class="w-100 img-thumbnail" src="<?= $is_adminPage ? '../' : '' ?>storage/<?= $bikeNavBar->bikeImage ?>" alt="">
                                             </div>
                                             <div class="">
                                                 <div class="cart-heading"><?= $bikeNavBar->bikeName ?></div>

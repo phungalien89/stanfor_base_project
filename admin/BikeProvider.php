@@ -136,13 +136,16 @@ class BikeProvider extends DataProvider
      * @param $keyword: keyword to filter
      * @param $column_name: column to search keyword
     */
-    public function getBikesByColumn($keyword, $column_name) : iterable
+    public function getBikesByColumn($keyword, $column_name, $num='all') : iterable
     {
         $arrBikes = [];
         $conn = $this->connect();
 
         $cmd = "SELECT * FROM bike WHERE " . $column_name . " LIKE '%". $keyword ."%'";
-
+        if($num != 'all'){
+            $cmd .= " LIMIT 8 OFFSET " . (int) $num;
+        }
+        //print_r($cmd);
         $res = mysqli_query($conn, $cmd);
         while($row = mysqli_fetch_array($res)){
             $bike = new Bike();
@@ -191,7 +194,7 @@ class BikeProvider extends DataProvider
             $arr_type_query = explode("|", $arrType[1]);
             $arrBrand = explode("=", $arr[1]);
             $arr_brand_query = explode("|", $arrBrand[1]);
-            if($arrType[0] == "q") $arrType[0] = ['bikeHighlight', 'bikeName', 'bikeShortDesc'];
+            if($arrType[0] == "q") $arrType[0] = ['bikeType', 'bikeHighlight', 'bikeName', 'bikeShortDesc'];
 
             if(count($arr_type_query) > 0){
                 foreach($arr_type_query as $item){
@@ -240,7 +243,7 @@ class BikeProvider extends DataProvider
         if(count($arr) == 1){
             $arr_query = explode("=", $arr[0]);
             $arr_col = $arr_query[0];
-            if ($arr_col == "q") $arr_col = ['bikeHighlight', 'bikeName', 'bikeShortDesc'];
+            if ($arr_col == "q") $arr_col = ['bikeType', 'bikeHighlight', 'bikeName', 'bikeShortDesc'];
             $arr_query_string = explode("|", $arr_query[1]);
 
             foreach($arr_query_string as $item){
@@ -281,7 +284,6 @@ class BikeProvider extends DataProvider
             $dir = $arr_sort[1] == "up" ? 'ASC' : 'DESC';
             $cmd .= " ORDER BY bikePrice " . $dir;
         }
-
         //var_dump($cmd);
         $res = mysqli_query($conn, $cmd);
         while($row = mysqli_fetch_array($res)){

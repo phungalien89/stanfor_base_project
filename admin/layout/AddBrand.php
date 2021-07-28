@@ -140,34 +140,47 @@
             $brand_name = $_POST['txtBrandName'];
             $brand_desc = $_POST['txtBrandDesc'];
             $image = $_FILES['txtBrandImage'];
+            $dir = "uploads/brand/";
 
             $brand_name = checkData($brand_name);
             if(strlen($brand_name) == 0){
                 $mes_brand_name = "Tên thương hiệu không được để trống";
+                $_SESSION['message'][] = ['title'=>'Thêm mới thương hiệu', 'status'=>'danger', 'content'=>"$mes_brand_name"];
                 $dataOK = false;
             }
             else{
                 if(strlen($brand_name) > 50){
                     $mes_brand_name = "Tên thương hiệu không dài quá 50 kí tự";
+                    $_SESSION['message'][] = ['title'=>'Thêm mới thương hiệu', 'status'=>'danger', 'content'=>"$mes_brand_name"];
                     $dataOK = false;
                 }
             }
 
             if(strlen($brand_desc) > 999){
                 $mes_brand_desc = "Mô tả không dài quá 999 kí tự. Độ dài hiện tại là" . strlen($brand_desc);
+                $_SESSION['message'][] = ['title'=>'Thêm mới thương hiệu', 'status'=>'danger', 'content'=>"$mes_brand_desc"];
                 $dataOk = false;
             }
 
             $image_type = basename($image['type']);
             if(strlen(basename($image['name'])) == 0){
                 $mes_brand_image = "Ảnh đại diện không được để trống";
+                $_SESSION['message'][] = ['title'=>'Thêm mới thương hiệu', 'status'=>'danger', 'content'=>"$mes_brand_image"];
                 $dataOK = false;
             }
             else{
                 if($image_type != "jpg" && $image_type != "jpeg" && $image_type != "png" && $image_type != "bmp"){
                     $mes_brand_image = "Ảnh phải có định dạng jpg, jpeg, png hoặc bmp";
                     $mes_brand_image .= " Định dạng hiện tại là " . $image_type;
+                    $_SESSION['message'][] = ['title'=>'Thêm mới thương hiệu', 'status'=>'danger', 'content'=>"$mes_brand_image"];
                     $dataOK = false;
+                }
+                else{
+                    if(file_exists("../storage/" . $dir . basename($image['name']))){
+                        $mes_brand_image = "Ảnh đại diện đã tồn tại. Hãy chọn ảnh có tên khác";
+                        $_SESSION['message'][] = ['title'=>'Thêm mới thương hiệu', 'status'=>'danger', 'content'=>"$mes_brand_image"];
+                        $dataOK = false;
+                    }
                 }
             }
 
@@ -178,7 +191,7 @@
                     /*$img = $manager->make($_SERVER['DOCUMENT_ROOT'] . "\storage\uploads\brand\\" . basename($image['name']))->fit(1200);
                     $img->save();*/
 
-                    $brand_image = "http://localhost:63342/Website/storage/uploads/brand/" . basename($image['name']);
+                    $brand_image = $dir . basename($image['name']);
                 }
 
                 $brand = new Brand();

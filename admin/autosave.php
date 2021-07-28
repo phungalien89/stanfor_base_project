@@ -125,6 +125,15 @@ if(isset($_REQUEST['get_edit_post_content'])){
     responseGETdata('edit_post_content');
 }
 
-//Dont add end of PHP here
+/* EDIT BANNER */
+//POST
+if(isset($_REQUEST['edit_banner'])){
+    responseData('edit_banner');
+}
+//GET
+if(isset($_REQUEST['get_edit_banner'])){
+    responseGETdata('edit_banner');
+}
+//Dont add the end of PHP here
 
 

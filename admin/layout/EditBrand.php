@@ -134,7 +134,7 @@
 
     if(isset($_REQUEST['btnBrandReturn'])){
         unset($_SESSION['brand_action']);
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php')</script>";
+        echo "<script>location.assign('AdminPage.php')</script>";
     }
 
     if(isset($_REQUEST['btnUpdateBrand'])){
@@ -148,21 +148,25 @@
             $brand_name = $_POST['txtBrandName'];
             $brand_desc = $_POST['txtBrandDesc'];
             $image = $_FILES['txtBrandImage'];
+            $dir = "uploads/brand/";
 
             $brand_name = checkData($brand_name);
             if(strlen($brand_name) == 0){
                 $mes_brand_name = "Tên thương hiệu không được để trống";
+                $_SESSION['message'][] = ['title'=>'Cập nhật thương hiệu', 'status'=>'danger', 'content'=>"$mes_brand_name"];
                 $dataOK = false;
             }
             else{
                 if(strlen($brand_name) > 50){
                     $mes_brand_name = "Tên thương hiệu không dài quá 50 kí tự";
+                    $_SESSION['message'][] = ['title'=>'Cập nhật thương hiệu', 'status'=>'danger', 'content'=>"$mes_brand_name"];
                     $dataOK = false;
                 }
             }
 
             if(strlen($brand_desc) > 999){
                 $mes_brand_desc = "Mô tả không dài quá 999 kí tự. Độ dài hiện tại là" . strlen($brand_desc);
+                $_SESSION['message'][] = ['title'=>'Cập nhật thương hiệu', 'status'=>'danger', 'content'=>"$mes_brand_desc"];
                 $dataOk = false;
             }
 
@@ -171,7 +175,15 @@
                 if($image_type != "jpg" && $image_type != "jpeg" && $image_type != "png" && $image_type != "bmp"){
                     $mes_brand_image = "Ảnh phải có định dạng jpg, jpeg, png hoặc bmp";
                     $mes_brand_image .= " Định dạng hiện tại là " . $image_type;
+                    $_SESSION['message'][] = ['title'=>'Cập nhật thương hiệu', 'status'=>'danger', 'content'=>"$mes_brand_image"];
                     $dataOK = false;
+                }
+                else{
+                    if(file_exists("../storage/" . $dir . basename($image['name']))){
+                        $mes_brand_image = "Ảnh đại diện đã tồn tại. Hãy chọn ảnh có tên khác";
+                        $_SESSION['message'][] = ['title'=>'Cập nhật thương hiệu', 'status'=>'danger', 'content'=>"$mes_brand_image"];
+                        $dataOK = false;
+                    }
                 }
             }
 
@@ -183,11 +195,10 @@
                     /*$img = $manager->make($_SERVER['DOCUMENT_ROOT'] . "\storage\uploads\brand\\" . basename($image['name']))->fit(1200);
                     $img->save();*/
 
-                    $prefix = "http://localhost:63342/Website";
-                    $filePath = substr($brand_image, strlen($prefix));
+                    $filePath = "/storage/" . $dir . $brand_image;
                     $filePath = str_replace("/", "\\", $filePath);
                     unlink($_SERVER['DOCUMENT_ROOT'] . $filePath);//also delete the brand image
-                    $brand_image = $prefix . "/storage/uploads/brand/" . basename($image['name']);
+                    $brand_image = $dir . basename($image['name']);
                 }
                 $brand = new Brand();
                 $brand->brandId = (int) $_SESSION['brandId'];
@@ -198,7 +209,7 @@
                 $_SESSION['message'][] = ['title'=>'Cập nhật thương hiệu', 'status'=>'success', 'content'=>'Đã cập nhật thương hiệu <b>'. $brand_name .'</b> thành công!'];
 
                 unset($_SESSION['brand_action']);
-                echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php')</script>";
+                echo "<script>location.assign('AdminPage.php')</script>";
             }
 
         }
@@ -300,7 +311,7 @@
     let saved = true;
     ClassicEditor.create(editor, {
         ckfinder:{
-            uploadUrl: 'http://localhost:63342/Website/vendor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            uploadUrl: '../vendor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
         },
         fontFamily: {
             options: [
@@ -388,7 +399,7 @@
             };
             if(!saved){
                 statusIndicator.classList.add('busy');
-                httpRequest.open('POST', "http://localhost:63342/Website/admin/autosave.php?edit_brand_desc=" + editor.getData().replace("&nbsp;", "").replace(/%/g, "o_o"));
+                httpRequest.open('POST', "autosave.php?edit_brand_desc=" + editor.getData().replace("&nbsp;", "").replace(/%/g, "o_o"));
                 httpRequest.send();
                 //console.log("Edited = " + editor.getData().replace("&nbsp;", "").replace(/"/g, "'"));
                 //console.log("Edited = " + editor.getData().replace("&nbsp;", ""));
@@ -439,7 +450,7 @@
                             $('#btnReload_editBrandDesc').removeClass("busy");
                         }
                     };
-                    httpRequest.open("GET", "http://localhost:63342/Website/admin/autosave.php?get_edit_brand_desc=true", true);
+                    httpRequest.open("GET", "autosave.php?get_edit_brand_desc=true", true);
                     httpRequest.send();
                     $('#btnReload_editBrandDesc').addClass("busy");
                 }

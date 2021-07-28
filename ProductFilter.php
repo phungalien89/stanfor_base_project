@@ -153,7 +153,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 </style>
 <body>
 <?php
-
+    $countPage = 0;
+    $currentPage = 1;
     $bikeMan = new BikeProvider();
     $typeMan = new TypeProvider();
     $brandMan = new BrandProvider();
@@ -164,6 +165,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     $keyword = "";
     $started_filter = "";
 
+    //Tạo biến bool để hiển thị các checkbox checked hay ko checked
     $arr_type = [];
     foreach($types as $id => $type){
         $arr_type[] = "type" . $id;
@@ -179,12 +181,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         ${$arr_brand[$id]} = false;
     }
     $query = "";
-    $currentPage = 1;
 
     $arr_desc_type = [];
     $arr_name_type = [];
     $arr_desc_brand = [];
     $arr_name_brand = [];
+
+    if(isset($_SESSION['pageNum'])){
+        $currentPage = (int) $_SESSION['pageNum'];
+    }
 
     //xử lý dữ liệu filter gửi từ trang HomePage
     if(isset($_SESSION['filter'])){
@@ -192,8 +197,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         $started_filter = $keyword;
         $_SESSION['pageNum'] = 1;
         $arrBikes = $bikeMan->getBikesByColumn($keyword, "bikeType");
+        $countPage = count($arrBikes);
+        $arrBikes = $bikeMan->getBikesByColumn($keyword, "bikeType", strval(8 * ($currentPage-1)));
         if(count($arrBikes) == 0){
             $arrBikes = $bikeMan->getBikesByColumn($keyword, "bikeBrand");
+            $countPage = count($arrBikes);
+            $arrBikes = $bikeMan->getBikesByColumn($keyword, "bikeBrand", strval(8 * ($currentPage-1)));
         }
         foreach($types as $id => $type){
             if($keyword == $type->typeName){
@@ -228,7 +237,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             if(isset($_SESSION['Type'.$id])){
                 unset($_SESSION['Type'.$id]);
             }
-            //echo "<script>alert('Query = ". $query ."');</script>";
         }
     }
     foreach($brands as $id => $brand){
@@ -257,19 +265,19 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     //echo "<script>alert('". $query ."');</script>";
 
     if(strlen($query) > 0){
-        $arrBikes = $bikeMan->getBikesByQuery($query);
+        $arrBikes = $bikeMan->getBikesByQuery($query, 'default', 'default', 'all');
+        $countPage = count($arrBikes);
+        $arrBikes = $bikeMan->getBikesByQuery($query, 'default', 'default', strval(8 * ($currentPage - 1)));
     }
     $_SESSION['sortType'] = "default";
     if(isset($_REQUEST['comboSort'])){
         $sortType = $_POST['comboSort'];
         $_SESSION['sortType'] = $sortType;
         if(strlen($query) > 0){
-            $arrBikes = $bikeMan->getBikesByQuery($query, $sortType);
+            $arrBikes = $bikeMan->getBikesByQuery($query, $sortType, 'default', 'all');
+            $countPage = count($arrBikes);
+            $arrBikes = $bikeMan->getBikesByQuery($query, $sortType,'default', strval(8 * ($currentPage - 1)));
         }
-    }
-
-    if(isset($_SESSION['pageNum'])){
-        $currentPage = (int) $_SESSION['pageNum'];
     }
 
 
@@ -293,7 +301,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 </div>
                 <div class="col-sm-8">
                     <?php
-                    if(count($arrBikes) > 7){ ?>
+                    if($countPage > 7){ ?>
                         <ul class="pagination pt-3 justify-content-end">
                             <li class="page-item <?= $currentPage == 1 ? 'disabled' : '' ?>">
                                 <a id="pageLinkTopPrev" href="" class="page-link">
@@ -301,8 +309,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                 </a>
                             </li>
                             <?php
-                            $pageNum = floor(count($arrBikes) / 8);
-                            if(count($arrBikes) % 8 > 0){
+                            $pageNum = floor($countPage / 8);
+                            if($countPage % 8 > 0){
                                 $pageNum += 1;
                             }
                             for($i = 0; $i < $pageNum; $i++){ ?>
@@ -370,7 +378,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <div class="bikeType_container">
                             <input onchange="this.form.submit()" <?= ${$arr_type[$id]} ? 'checked' : '' ?> <?= $started_filter == $type->typeName ? 'checked' : '' ?> type="checkbox" name="chkType<?= $id ?>" id="chkType<?= $id ?>">
                             <label for="chkType<?= $id ?>" class="text-uppercase">
-                                <img class="h-100" src="<?= $type->typeImage ?>" alt="">
+                                <img class="h-100" src="storage/<?= $type->typeImage ?>" alt="storage/<?= $type->typeImage ?>">
                             </label>
                         </div>
                     <?php }
@@ -381,7 +389,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <div class="bikeType_container">
                             <input onchange="this.form.submit()" <?= ${$arr_brand[$id]} ? 'checked' : '' ?> <?= $started_filter == $brand->brandName ? 'checked' : '' ?> type="checkbox" name="chkBrand<?= $id ?>" id="chkBrand<?= $id ?>">
                             <label for="chkBrand<?= $id ?>" class="text-uppercase">
-                                <img class="h-100" src="<?= $brand->brandLogo ?>" alt="">
+                                <img class="h-100" src="storage/<?= $brand->brandLogo ?>" alt="storage/<?= $brand->brandLogo ?>">
                             </label>
                         </div>
                     <?php }
@@ -421,79 +429,78 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             </div>
             <div class="section group row py-3">
                 <?php
-                    foreach($arrBikes as $id => $bike) {
-                        if ($id >= (($currentPage - 1) * 8) && $id < ($currentPage * 8)) { ?>
-                            <div class="col-sm-6 col-md-4 col-lg-3 py-2">
-                                <div class="card shadow hover-scale-down">
-                                    <?php
-                                    $fiveDays_ago = strtotime("-8 day");
-                                    ?>
-                                    <div class="<?= strtotime($bike->dateModified) > $fiveDays_ago ? 'new-product' : '' ?>"></div>
-                                    <div class="card-body position-relative">
-                                        <a href="BikeDetail.php?bikeId=<?= $bike->bikeId ?>"
-                                           class="stretched-link"></a>
-                                        <div style="<?= $bike->bikeDiscountPrice == 0 ? 'color: transparent' : '' ?>"
-                                             class="price discount text-center"><?= formatPrice($bike->bikePrice) ?>
-                                            &#8363;
-                                        </div>
-                                        <img class="mx-auto w-100" src="<?= $bike->bikeImage ?>"
-                                             alt="<?= $bike->bikeImage ?>"/>
-                                        <div class="text-center font-weight-bold"
-                                             style="font-size: 1.25em; color: #009688;"><?= $bike->bikeName ?></div>
-                                        <?php
-                                        if ($bike->bikeDiscountPrice == 0) { ?>
-                                            <div class="price no-discount text-center pt-2"><?= formatPrice($bike->bikePrice) ?>
-                                                &#8363;
-                                            </div>
-                                        <?php } else { ?>
-                                            <div class="price-discount text-center pt-2"><?= formatPrice($bike->bikeDiscountPrice) ?>
-                                                &#8363;
-                                            </div>
-                                        <?php }
-                                        ?>
-                                    </div>
-                                    <div class="card-footer">
-                                        <div class="row justify-content-between">
-                                            <button data-toggle="tooltip" title="Thêm vào yêu thích" name="btnAddWish"
-                                                    id="btnAddWishFilter<?= $bike->bikeId ?>"
-                                                    class="btn btn-danger" <?= array_search($bike->bikeId, $_SESSION['wish'] ?? []) > -1 ? 'disabled' : '' ?>>
-                                                <span class="fas fa-heart"></span>
-                                            </button>
-                                            <button data-toggle="tooltip" title="Thêm vào giỏ hàng" name="btnAddCart"
-                                                    id="btnAddCartFilter<?= $bike->bikeId ?>"
-                                                    class="btn btn-info" <?= array_search($bike->bikeId, $_SESSION['cart'] ?? []) > -1 ? 'disabled' : '' ?>>
-                                                <span class="fas fa-cart-plus"></span>
-                                            </button>
-                                            <script>
-                                                $('#btnAddCartFilter<?= $bike->bikeId ?>').on("click", () => {
-                                                    var httpRequest = new XMLHttpRequest();
-                                                    httpRequest.onreadystatechange = () => {
-                                                        if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-                                                            location.assign('<?= $_SERVER['PHP_SELF'] ?>');
-                                                        }
-                                                    };
-                                                    var q = "&selection=" + "<?= implode('|', $arr_name_type) ?>" + "|" + "<?= implode('|', $arr_name_brand) ?>";
-                                                    httpRequest.open("POST", "AddToCart.php?addToCart=<?= $bike->bikeId ?>" + q, true);
-                                                    httpRequest.send();
-                                                });
-                                                $('#btnAddWishFilter<?= $bike->bikeId ?>').on("click", () => {
-                                                    var httpRequest = new XMLHttpRequest();
-                                                    httpRequest.onreadystatechange = () => {
-                                                        if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-                                                            location.assign('<?= $_SERVER['PHP_SELF'] ?>');
-                                                        }
-                                                    };
-                                                    var q = "&selection=" + "<?= implode('|', $arr_name_type) ?>" + "|" + "<?= implode('|', $arr_name_brand) ?>";
-                                                    httpRequest.open("POST", "AddToWish.php?addToWish=<?= $bike->bikeId ?>" + q, true);
-                                                    httpRequest.send();
-                                                });
-
-                                            </script>
-                                        </div>
-                                    </div>
-                                </div>
+                    foreach($arrBikes as $id => $bike) { ?>
+                <div class="col-sm-6 col-md-4 col-lg-3 py-2">
+                    <div class="card shadow hover-scale-down">
+                        <?php
+                        $fiveDays_ago = strtotime("-5 day");
+                        ?>
+                        <div class="<?= strtotime($bike->dateModified) > $fiveDays_ago ? 'new-product' : '' ?>"></div>
+                        <div class="card-body position-relative">
+                            <a href="BikeDetail.php?bikeId=<?= $bike->bikeId ?>"
+                               class="stretched-link"></a>
+                            <div style="<?= $bike->bikeDiscountPrice == 0 ? 'color: transparent' : '' ?>"
+                                 class="price discount text-center"><?= formatPrice($bike->bikePrice) ?>
+                                &#8363;
                             </div>
-                        <?php }
+                            <img class="mx-auto w-100" src="storage/<?= $bike->bikeImage ?>"
+                                 alt="<?= $bike->bikeImage ?>"/>
+                            <div class="text-center font-weight-bold"
+                                 style="font-size: 1.25em; color: #009688;"><?= $bike->bikeName ?></div>
+                            <?php
+                            if ($bike->bikeDiscountPrice == 0) { ?>
+                                <div class="price no-discount text-center pt-2"><?= formatPrice($bike->bikePrice) ?>
+                                    &#8363;
+                                </div>
+                            <?php } else { ?>
+                                <div class="price-discount text-center pt-2"><?= formatPrice($bike->bikeDiscountPrice) ?>
+                                    &#8363;
+                                </div>
+                            <?php }
+                            ?>
+                        </div>
+                        <div class="card-footer">
+                            <div class="row justify-content-between">
+                                <button data-toggle="tooltip" title="Thêm vào yêu thích" name="btnAddWish"
+                                        id="btnAddWishFilter<?= $bike->bikeId ?>"
+                                        class="btn btn-danger" <?= array_search($bike->bikeId, $_SESSION['wish'] ?? []) > -1 ? 'disabled' : '' ?>>
+                                    <span class="fas fa-heart"></span>
+                                </button>
+                                <button data-toggle="tooltip" title="Thêm vào giỏ hàng" name="btnAddCart"
+                                        id="btnAddCartFilter<?= $bike->bikeId ?>"
+                                        class="btn btn-info" <?= array_search($bike->bikeId, $_SESSION['cart'] ?? []) > -1 ? 'disabled' : '' ?>>
+                                    <span class="fas fa-cart-plus"></span>
+                                </button>
+                                <script>
+                                    $('#btnAddCartFilter<?= $bike->bikeId ?>').on("click", () => {
+                                        var httpRequest = new XMLHttpRequest();
+                                        httpRequest.onreadystatechange = () => {
+                                            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                                                location.assign('<?= $_SERVER['PHP_SELF'] ?>');
+                                            }
+                                        };
+                                        var q = "&selection=" + "<?= implode('|', $arr_name_type) ?>" + "|" + "<?= implode('|', $arr_name_brand) ?>";
+                                        httpRequest.open("POST", "AddToCart.php?addToCart=<?= $bike->bikeId ?>" + q, true);
+                                        httpRequest.send();
+                                    });
+                                    $('#btnAddWishFilter<?= $bike->bikeId ?>').on("click", () => {
+                                        var httpRequest = new XMLHttpRequest();
+                                        httpRequest.onreadystatechange = () => {
+                                            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                                                location.assign('<?= $_SERVER['PHP_SELF'] ?>');
+                                            }
+                                        };
+                                        var q = "&selection=" + "<?= implode('|', $arr_name_type) ?>" + "|" + "<?= implode('|', $arr_name_brand) ?>";
+                                        httpRequest.open("POST", "AddToWish.php?addToWish=<?= $bike->bikeId ?>" + q, true);
+                                        httpRequest.send();
+                                    });
+
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                        <?php
                     }
                 ?>
             </div>

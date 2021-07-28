@@ -1,7 +1,7 @@
 
 <div class="headertop_desc">
     <?php
-        //include "layout/navbar.php";
+        include "layout/navbar.php";
     ?>
 </div>
 <div class="header_top">

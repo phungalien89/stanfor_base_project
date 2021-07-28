@@ -1,3 +1,6 @@
+<?php
+    global $is_adminPage;
+?>
 <style>
     .message-notifier{
         position: absolute;
@@ -47,7 +50,7 @@
 
         $('.toast').on("hidden.bs.toast", ()=>{
             var httpRequest = new XMLHttpRequest();
-            httpRequest.open("POST", "http://localhost:63342/Website/inc/messageManager.php?reset=true", true);
+            httpRequest.open("POST", "<?= $is_adminPage ? '../' : '' ?>inc/messageManager.php?reset=true", true);
             httpRequest.send();
         });
     });

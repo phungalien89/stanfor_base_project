@@ -91,7 +91,7 @@ class UserProvider extends DataProvider
         }
         else{
             $conn = $this->connect();
-            $cmd = "UPDATE user SET userEmail=?, userPassword=?, userImage=?, userDisplayName=?, dateModified=NOW() WHERE userId='". $user->userId ."'";
+            $cmd = "UPDATE user SET userEmail=?, userPassword=?, userImage=?, userDisplayName=?, dateModified=NOW() WHERE userId=". $user->userId;
             $stm = $conn->prepare($cmd);
             $stm->bind_param("ssss", $user->userEmail, $user->userPassword, $user->userImage, $user->userDisplayName);
             $stm->execute();

@@ -186,6 +186,11 @@
                     <span class="fas fa-cogs text-primary pr-2"></span>
                     <span class="text-uppercase">Kiểu xe</span>
                 </label>
+                <input type="radio" <?= $_SESSION['selected_tab'] == "banner" ? "checked" : "" ?> name="menu1" id="banner" value="banner">
+                <label for="banner">
+                    <span class="fas fa-images text-primary pr-2"></span>
+                    <span class="text-uppercase">Banner</span>
+                </label>
             </div>
         </div>
         <div id="main-container" class="main-container">
@@ -213,6 +218,11 @@
                 <div class="menu_option" id="type_manager" style='<?= $_SESSION["selected_tab"] == "type" ? "display: block" : "display: none" ?>'>
                     <?php
                         include "layout/TypeManager.php";
+                    ?>
+                </div>
+                <div class="menu_option" id="banner_manager" style='<?= $_SESSION["selected_tab"] == "banner" ? "display: block" : "display: none" ?>'>
+                    <?php
+                        include "layout/BannerManager.php";
                     ?>
                 </div>
                 <div class="menu_option" id="user_add" style="display: none">
@@ -367,6 +377,21 @@
                     }
                     ?>
                 </div>
+                <div class="menu_option" id="banner_edit" style="display: none">
+                    <?php
+                    if(isset($_SESSION['banner_action'])){
+                        if($_SESSION['banner_action'] == "edit"){
+                            include "layout/EditBanner.php"; ?>
+                            <script>
+                                $(document).ready(()=>{
+                                    $('.menu_option').css({'display' : "none"});
+                                    $('#banner_edit').css({'display' : "block"});
+                                });
+                            </script>
+                        <?php }
+                    }
+                    ?>
+                </div>
             </div>
         </div>
     </div>
@@ -390,7 +415,7 @@
                         $('.menu_option').css({'display' : "none"});
                         $('#user_manager').css({'display':"block"});
                         var httpRequest = new XMLHttpRequest();
-                        httpRequest.open("post", "http://localhost:63342/Website/admin/AdminPage.php?q=reset&selected_tab=user");
+                        httpRequest.open("post", "<?= $_SERVER['PHP_SELF'] ?>?q=reset&selected_tab=user");
                         httpRequest.send();
                     }
                 }
@@ -401,7 +426,7 @@
                         $('.menu_option').css({'display' : "none"});
                         $('#bike_manager').css({'display':"block"});
                         var httpRequest = new XMLHttpRequest();
-                        httpRequest.open("post", "http://localhost:63342/Website/admin/AdminPage.php?q=reset&selected_tab=bike");
+                        httpRequest.open("post", "<?= $_SERVER['PHP_SELF'] ?>?q=reset&selected_tab=bike");
                         httpRequest.send();
                     }
                 }
@@ -412,7 +437,7 @@
                         $('.menu_option').css({'display' : "none"});
                         $('#post_manager').css({'display':"block"});
                         var httpRequest = new XMLHttpRequest();
-                        httpRequest.open("post", "http://localhost:63342/Website/admin/AdminPage.php?q=reset&selected_tab=post");
+                        httpRequest.open("post", "<?= $_SERVER['PHP_SELF'] ?>?q=reset&selected_tab=post");
                         httpRequest.send();
                     }
                 }
@@ -423,7 +448,7 @@
                         $('.menu_option').css({'display' : "none"});
                         $('#brand_manager').css({'display':"block"});
                         var httpRequest = new XMLHttpRequest();
-                        httpRequest.open("post", "http://localhost:63342/Website/admin/AdminPage.php?q=reset&selected_tab=brand");
+                        httpRequest.open("post", "<?= $_SERVER['PHP_SELF'] ?>?q=reset&selected_tab=brand");
                         httpRequest.send();
                     }
                 }
@@ -434,7 +459,18 @@
                         $('.menu_option').css({'display' : "none"});
                         $('#type_manager').css({'display':"block"});
                         var httpRequest = new XMLHttpRequest();
-                        httpRequest.open("post", "http://localhost:63342/Website/admin/AdminPage.php?q=reset&selected_tab=type");
+                        httpRequest.open("post", "<?= $_SERVER['PHP_SELF'] ?>?q=reset&selected_tab=type");
+                        httpRequest.send();
+                    }
+                }
+            });
+            $('#banner').on({
+                'change' : (e)=>{
+                    if(e.target.checked){
+                        $('.menu_option').css({'display' : "none"});
+                        $('#banner_manager').css({'display':"block"});
+                        var httpRequest = new XMLHttpRequest();
+                        httpRequest.open("post", "<?= $_SERVER['PHP_SELF'] ?>?q=reset&selected_tab=banner");
                         httpRequest.send();
                     }
                 }

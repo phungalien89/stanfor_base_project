@@ -93,7 +93,7 @@ if(isset($_REQUEST['btnDeletePost'])){
                         <div class="hover-scale" style="width: 80px">
                             <?php
                             if(strlen($post->postImage) > 0){ ?>
-                                <img class="img-thumbnail w-100" src="<?= $post->postImage ?>" alt="">
+                                <img class="img-thumbnail w-100" src="../storage/<?= $post->postImage ?>" alt="">
                             <?php }
                             ?>
                         </div>

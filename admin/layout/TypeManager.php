@@ -64,7 +64,7 @@ spl_autoload_register(function($class_name){
                         <td><?= $type->typeId ?></td>
                         <td>
                             <div class="hover-scale" style="width: 80px">
-                                <img class="img-thumbnail w-100" src="<?= $type->typeImage ?>" alt="">
+                                <img class="img-thumbnail w-100" src="../storage/<?= $type->typeImage ?>" alt="../storage/<?= $type->typeImage ?>">
                             </div>
                         </td>
                         <td><?= $type->typeName ?></td>

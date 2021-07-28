@@ -151,15 +151,18 @@
             $post_tag = $_POST['txtPostTag'];
             $post_content = $_POST['txtPostContent'];
             $image = $_FILES['txtPostImage'];
+            $dir = "uploads/post/";
 
             $post_title = checkData($post_title);
             if(strlen($post_title) == 0){
                 $mes_post_title = "Tiêu đề bài đăng không được để trống";
+                $_SESSION['message'][] = ['title'=>'Thêm mới bài đăng', 'status'=>'danger', 'content'=>"$mes_post_title"];
                 $dataOK = false;
             }
             else{
                 if(strlen($post_title) > 100){
                     $mes_post_title = "Tiêu đề bài đăng không dài quá 100 kí tự. Độ dài hiện tại là: " . strlen($post_title);
+                    $_SESSION['message'][] = ['title'=>'Thêm mới bài đăng', 'status'=>'danger', 'content'=>"$mes_post_title"];
                     $dataOK = false;
                 }
             }
@@ -169,6 +172,7 @@
             $post_tag = checkData($post_tag);
             if(strlen($post_tag) == 0){
                 $mes_post_tag = "Từ khóa không thể để trống";
+                $_SESSION['message'][] = ['title'=>'Thêm mới bài đăng', 'status'=>'danger', 'content'=>"$mes_post_tag"];
                 $dataOK = false;
             }
 
@@ -176,7 +180,15 @@
             if(strlen(basename($image['name'])) > 0){
                 if($image_type != "jpg" && $image_type != "jpeg" && $image_type != "png" && $image_type != "bmp"){
                     $mes_post_image = "Ảnh phải có định dạng jpg, jpeg, png hoặc bmp. Định dạng hiện tại là " . $image_type;
+                    $_SESSION['message'][] = ['title'=>'Thêm mới bài đăng', 'status'=>'danger', 'content'=>"$mes_post_image"];
                     $dataOK = false;
+                }
+                else{
+                    if(file_exists("../storage/" . $dir . basename($image['name']))){
+                        $mes_post_image = "Ảnh bài đăng đã tồn tại. Hãy chọn ảnh có tên khác";
+                        $_SESSION['message'][] = ['title'=>'Thêm mới bài đăng', 'status'=>'danger', 'content'=>"$mes_post_image"];
+                        $dataOK = false;
+                    }
                 }
             }
 
@@ -187,11 +199,10 @@
                     $img = $manager->make($_SERVER['DOCUMENT_ROOT'] . "\storage\uploads\post\\" . basename($image['name']))->fit(1200);
                     $img->save();
 
-                    $prefix = "http://localhost:63342/Website";
-                    $filePath = substr($post_image, strlen($prefix));
+                    $filePath = "/storage/" . $dir . $post_image;
                     $filePath = str_replace("/", "\\", $filePath);
                     unlink($_SERVER['DOCUMENT_ROOT'] . $filePath);//also delete the post image
-                    $post_image = $prefix . "/storage/uploads/post/" . basename($image['name']);
+                    $post_image = $dir . basename($image['name']);
                 }
                 $post = new Post();
                 $post->postId = (int) $_SESSION['postId'];
@@ -274,7 +285,7 @@
                                     <label id="post_file_label" for="txtPostImage" class="custom-file-label">Chọn file để upload</label>
                                 </div>
                                 <div class="row mx-auto w-50 pt-3">
-                                    <img id="post_file_image" class="rounded-circle w-100" src="<?= $post_image ?>" alt="">
+                                    <img id="post_file_image" class="rounded-circle w-100" src="../storage/<?= $post_image ?>" alt="../storage/<?= $post_image ?>">
                                 </div>
                                 <?php
                                 if(strlen($mes_post_image) > 0){ ?>

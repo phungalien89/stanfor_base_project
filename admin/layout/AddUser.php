@@ -23,7 +23,7 @@
 <style>
     @font-face {
         font-family: fontAwesome;
-        src: url("../../webfonts/fa-solid-900.woff");
+        src: url("../webfonts/fa-solid-900.woff");
     }
     .form-group label:first-child{
         font-weight: bold;
