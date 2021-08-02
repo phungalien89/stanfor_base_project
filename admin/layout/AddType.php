@@ -59,15 +59,18 @@
             }
             $type_name = $_POST['txtTypeName'];
             $image = $_FILES['txtTypeImage'];
+            $dir = "uploads/type/";
 
             $type_name = checkData($type_name);
             if(strlen($type_name) == 0){
                 $mes_type_name = "Kiểu xe không được để trống";
+                $_SESSION['message'][] = ['title'=>'Thêm mới kiểu xe', 'status'=>'danger', 'content'=>"$mes_type_name"];
                 $dataOK = false;
             }
             else {
                 if (strlen($type_name) > 20) {
                     $mes_type_name = "Kiểu xe không dài quá 20 kí tự";
+                    $_SESSION['message'][] = ['title'=>'Thêm mới kiểu xe', 'status'=>'danger', 'content'=>"$mes_type_name"];
                     $dataOK = false;
                 }
             }
@@ -75,21 +78,29 @@
             $image_type = basename($image['type']);
             if(strlen(basename($image['name'])) == 0){
                 $mes_type_image = "Ảnh đại diện không được để trống";
+                $_SESSION['message'][] = ['title'=>'Thêm mới kiểu xe', 'status'=>'danger', 'content'=>"$mes_type_image"];
                 $dataOK = false;
             }
             else{
                 if($image_type != "jpg" && $image_type != "jpeg" && $image_type != "png" && $image_type != "bmp"){
                     $mes_type_image = "Ảnh phải có định dạng jpg, jpeg, png hoặc bmp";
                     $mes_type_image .= " Định dạng hiện tại là " . $image_type;
+                    $_SESSION['message'][] = ['title'=>'Thêm mới kiểu xe', 'status'=>'danger', 'content'=>"$mes_type_image"];
                     $dataOK = false;
+                }
+                else{
+                    if(file_exists("../storage/" . $dir . basename($image['name']))){
+                        $mes_type_image = "Ảnh đại diện đã tồn tại. Hãy chọn ảnh có tên khác";
+                        $_SESSION['message'][] = ['title'=>'Thêm mới kiểu xe', 'status'=>'danger', 'content'=>"$mes_type_image"];
+                        $dataOK = false;
+                    }
                 }
             }
 
             if($dataOK){
                 if(strlen(basename($image['name'])) > 0) {
                     $upload_stat = move_uploaded_file($image['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . "\storage\uploads\\type\\" . basename($image['name']));
-
-                    $type_image = "http://localhost:63342/Website/storage/uploads/type/" . basename($image['name']);
+                    $type_image = $dir . basename($image['name']);
                 }
 
                 $type = new Type();

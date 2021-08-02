@@ -43,7 +43,7 @@
             unset($_SESSION['is_userAdmin']);
         }
         unset($_SESSION['is_logged']);
-        header('location: http://localhost:63342/Website/HomePage.php');
+        header('location: /Website/HomePage.php');
     }
 
     if(isset($_SESSION['wish'])){
@@ -68,7 +68,7 @@
             </button>
         </li>
         <li data-toggle="tooltip" title="Trang chủ" class="nav-item <?= $is_homepage ? 'active' : '' ?>" >
-            <a href="http://localhost:63342/Website/HomePage.php" class="nav-link">
+            <a href="/Website/HomePage.php" class="nav-link">
                 <span class="fa fa-home" style="font-size: 1.5em;"></span>
             </a>
         </li>
@@ -95,9 +95,9 @@
                                     $bikeNavBar = $bikeNavBarMan->getBikeById($bikeNavBarId); ?>
                                     <div class="p-2 row clear">
                                         <div class="col-10">
-                                            <a href="http://localhost:63342/Website/BikeDetail.php?bikeId=<?= $bikeNavBarId ?>" class="stretched-link"></a>
+                                            <a href="/Website/BikeDetail.php?bikeId=<?= $bikeNavBarId ?>" class="stretched-link"></a>
                                             <div class="mr-2" style="width: 80px; float: left">
-                                                <img class="w-100 img-thumbnail" src="<?= $bikeNavBar->bikeImage ?>" alt="">
+                                                <img class="w-100 img-thumbnail" src="<?= $is_adminPage ? '../' : '' ?>storage/<?= $bikeNavBar->bikeImage ?>" alt="">
                                             </div>
                                             <div class="">
                                                 <div class="cart-heading"><?= $bikeNavBar->bikeName ?></div>
@@ -123,10 +123,10 @@
                 <img style="width: 45px; height: 45px; display: <?= $user ? "block" : "none" ?>" class="rounded-circle hover-shadow-outline" src="<?= $is_adminPage ? '../' : '' ?><?= isset($user) ? 'storage/' . $user->userImage : "" ?>" alt="<?= $is_adminPage ? '../' : '' ?> <?= isset($user) ? 'storage/' . $user->userImage : "" ?>">
             </li>
             <li class="nav-item <?= ($is_login | $is_logged) ? 'collapse' : '' ?>">
-                <a href="http://localhost:63342/Website/login.php" class="nav-link">Đăng nhập</a>
+                <a href="/Website/login.php" class="nav-link">Đăng nhập</a>
             </li>
             <li class="nav-item <?= ($is_register | $is_logged) ? 'collapse' : '' ?>">
-                <a href="http://localhost:63342/Website/register.php" class="nav-link">Đăng ký</a>
+                <a href="/Website/register.php" class="nav-link">Đăng ký</a>
             </li>
             <li class="nav-item px-2 <?= $is_adminPage ? 'collapse' : '' ?> <?= $is_userAdmin ? "" : "collapse" ?>">
                 <a href="admin/AdminPage.php" class="nav-link"><span class="fa fa-cog" style="font-size: 1.5em;"></span></a>
@@ -158,7 +158,7 @@
         var r = confirm("Bạn muốn xóa sản phẩm này khỏi mục yêu thích?");
         if(r){
             var httpRequest = new XMLHttpRequest();
-            httpRequest.open("POST", "http://localhost:63342/Website/AddToWish.php?selection=" + "<?= implode('|', $arr_name_type ?? []) ?>" + "|" + "<?= implode('|', $arr_name_brand ?? []) ?>", true);
+            httpRequest.open("POST", "/Website/AddToWish.php?selection=" + "<?= implode('|', $arr_name_type ?? []) ?>" + "|" + "<?= implode('|', $arr_name_brand ?? []) ?>", true);
             httpRequest.send();
         }
         else{

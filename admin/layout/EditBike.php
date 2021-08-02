@@ -140,7 +140,7 @@
 
     if(isset($_REQUEST['btnBikeEditReturn'])){
         unset($_SESSION['bike_action']);
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php')</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php')</script>";
     }
 
     if(isset($_SESSION['bikeId'])){
@@ -160,7 +160,7 @@
 
     if(isset($_REQUEST['btnBikeReturn'])){
         unset($_SESSION['bike_action']);
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php')</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php')</script>";
     }
 
     if(isset($_REQUEST['btnUpdateBike'])){
@@ -275,7 +275,7 @@
 
                 unset($_SESSION['bike_action']);
                 $_SESSION['message'][] = ['title'=>'Cập nhật sản phẩm', 'status'=>'success', 'content'=>'Đã cập nhật <b>'. $bike->bikeName .'</b> thành công!'];
-                echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php')</script>";
+                echo "<script>location.assign('/Website/admin/AdminPage.php')</script>";
             }
 
         }
@@ -550,7 +550,7 @@
     let edit_bike_short_desc_Editor = document.querySelector('#txtBikeShortDesc');
     ClassicEditor.create(edit_bike_short_desc_Editor, {
         ckfinder:{
-            uploadUrl: 'http://localhost:63342/Website/vendor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            uploadUrl: '/Website/vendor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
         },
         fontFamily: {
             options: [
@@ -621,7 +621,7 @@
     let edit_bike_gift_Editor = document.querySelector('#txtBikeGift');
     ClassicEditor.create(edit_bike_gift_Editor, {
         ckfinder:{
-            uploadUrl: 'http://localhost:63342/Website/vendor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            uploadUrl: '/Website/vendor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
         },
         fontFamily: {
             options: [
@@ -691,7 +691,7 @@
     let edit_bike_highlight_Editor = document.querySelector('#txtBikeHighlight');
     ClassicEditor.create(edit_bike_highlight_Editor, {
         ckfinder:{
-            uploadUrl: 'http://localhost:63342/Website/vendor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            uploadUrl: '/Website/vendor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
         },
         fontFamily: {
             options: [
@@ -762,7 +762,7 @@
     let edit_bike_specs_Editor = document.querySelector('#txtBikeSpecs');
     ClassicEditor.create(edit_bike_specs_Editor, {
         ckfinder:{
-            uploadUrl: 'http://localhost:63342/Website/vendor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            uploadUrl: '/Website/vendor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
         },
         fontFamily: {
             options: [
@@ -833,7 +833,7 @@
     let edit_bike_gallery_Editor = document.querySelector('#txtBikeGallery');
     ClassicEditor.create(edit_bike_gallery_Editor, {
         ckfinder:{
-            uploadUrl: 'http://localhost:63342/Website/vendor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            uploadUrl: '/Website/vendor/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
         },
         fontFamily: {
             options: [
@@ -924,7 +924,7 @@
                 }
             };
             if(!saved_shortDesc){
-                httpRequest_shortDesc.open("POST", "http://localhost:63342/Website/admin/autosave.php?edit_bike_short_desc=" + e.getData().replace(/&nbsp;/g, "").replace(/%/g, "o_o"), true);
+                httpRequest_shortDesc.open("POST", "/Website/admin/autosave.php?edit_bike_short_desc=" + e.getData().replace(/&nbsp;/g, "").replace(/%/g, "o_o"), true);
                 httpRequest_shortDesc.send();
                 $('.autosave-status-short-desc').addClass("busy");
             }
@@ -951,7 +951,7 @@
                 }
             };
             if(!saved_gift){
-                httpRequest_gift.open("POST", "http://localhost:63342/Website/admin/autosave.php?edit_bike_gift=" + e.getData().replace(/&nbsp;/g, "").replace(/%/g, "o_o"), true);
+                httpRequest_gift.open("POST", "/Website/admin/autosave.php?edit_bike_gift=" + e.getData().replace(/&nbsp;/g, "").replace(/%/g, "o_o"), true);
                 httpRequest_gift.send();
                 $('.autosave-status-gift').addClass("busy");
             }
@@ -980,7 +980,7 @@
                 }
             };
             if(!saved_highlight){
-                httpRequest_highlight.open("POST", "http://localhost:63342/Website/admin/autosave.php?edit_bike_highlight=" + e.getData().replace(/&nbsp;/g, "").replace(/%/g, "o_o"), true);
+                httpRequest_highlight.open("POST", "/Website/admin/autosave.php?edit_bike_highlight=" + e.getData().replace(/&nbsp;/g, "").replace(/%/g, "o_o"), true);
                 httpRequest_highlight.send();
                 $('.autosave-status-highlight').addClass("busy");
             }
@@ -1009,7 +1009,7 @@
                 }
             };
             if(!saved_specs){
-                httpRequest_specs.open("POST", "http://localhost:63342/Website/admin/autosave.php?edit_bike_specs=" + e.getData().replace(/&nbsp;/g, "").replace(/%/g, "o_o"), true);
+                httpRequest_specs.open("POST", "/Website/admin/autosave.php?edit_bike_specs=" + e.getData().replace(/&nbsp;/g, "").replace(/%/g, "o_o"), true);
                 httpRequest_specs.send();
                 $('.autosave-status-specs').addClass("busy");
             }
@@ -1038,7 +1038,7 @@
                 }
             };
             if(!saved_gallery){
-                httpRequest_gallery.open("POST", "http://localhost:63342/Website/admin/autosave.php?edit_bike_gallery=" + e.getData().replace(/&nbsp;/g, "").replace(/%/g, "o_o"), true);
+                httpRequest_gallery.open("POST", "/Website/admin/autosave.php?edit_bike_gallery=" + e.getData().replace(/&nbsp;/g, "").replace(/%/g, "o_o"), true);
                 httpRequest_gallery.send();
                 $('.autosave-status-gallery').addClass("busy");
             }
@@ -1142,7 +1142,7 @@
                         $('#btnReload_addBikeShortDesc').removeClass("busy");
                     }
                 };
-                httpRequest.open("GET", "http://localhost:63342/Website/admin/autosave.php?get_edit_bike_short_desc=true", true);
+                httpRequest.open("GET", "/Website/admin/autosave.php?get_edit_bike_short_desc=true", true);
                 httpRequest.send();
                 $('#btnReload_addBikeShortDesc').addClass("busy");
             }
@@ -1158,7 +1158,7 @@
                         $('#btnReload_addBikeGift').removeClass("busy");
                     }
                 };
-                httpRequest.open("GET", "http://localhost:63342/Website/admin/autosave.php?get_edit_bike_gift=true", true);
+                httpRequest.open("GET", "/Website/admin/autosave.php?get_edit_bike_gift=true", true);
                 httpRequest.send();
                 $('#btnReload_addBikeGift').addClass("busy");
             }
@@ -1175,7 +1175,7 @@
                         $('#btnReload_addBikeHighlight').removeClass("busy");
                     }
                 };
-                httpRequest.open("GET", "http://localhost:63342/Website/admin/autosave.php?get_edit_bike_highlight=true", true);
+                httpRequest.open("GET", "/Website/admin/autosave.php?get_edit_bike_highlight=true", true);
                 httpRequest.send();
                 $('#btnReload_addBikeHighlight').addClass("busy");
             }
@@ -1192,7 +1192,7 @@
                         $('#btnReload_addBikeSpecs').removeClass("busy");
                     }
                 };
-                httpRequest.open("GET", "http://localhost:63342/Website/admin/autosave.php?get_edit_bike_specs=true", true);
+                httpRequest.open("GET", "/Website/admin/autosave.php?get_edit_bike_specs=true", true);
                 httpRequest.send();
                 $('#btnReload_addBikeSpecs').addClass("busy");
             }
@@ -1209,7 +1209,7 @@
                         $('#btnReload_addBikeGallery').removeClass("busy");
                     }
                 };
-                httpRequest.open("GET", "http://localhost:63342/Website/admin/autosave.php?get_edit_bike_gallery=true", true);
+                httpRequest.open("GET", "/Website/admin/autosave.php?get_edit_bike_gallery=true", true);
                 httpRequest.send();
                 $('#btnReload_addBikeGallery').addClass("busy");
             }

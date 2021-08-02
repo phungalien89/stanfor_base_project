@@ -30,7 +30,7 @@
         transform: translateY(0%);
         z-index: 1;
     }
-    ..floating-box fa-envelope{
+    ..floating-box .fa-envelope{
         transform: translateY(0%);
         z-index: 1;
     }
@@ -51,7 +51,7 @@
     }
 </style>
 <div class="floating-box">
-    <a class="bell-container" href="#">
+    <a id="bell-container" class="bell-container" href="">
         <span id="bell" class="fas fa-bell"></span>
     </a>
     <a href="tel:0356078993">
@@ -63,14 +63,21 @@
 </div>
 <script>
     $(document).ready(()=>{
-        $('#bell').on("click", (e)=> {
-            e.preventDefault();
-            if(!$('#bell').hasClass('active')){
-                $('#phone').css("transform", "translateY(-150%)");
-                $('#mail').css("transform", "translateY(-300%)");
-                $('#bell').addClass('active');
-            }
-            else{
+        $('#bell-container').on({
+            'click' : (e)=> {
+                e.preventDefault();
+                if(!$('#bell').hasClass('active')){
+                    $('#phone').css("transform", "translateY(-150%)");
+                    $('#mail').css("transform", "translateY(-300%)");
+                    $('#bell').addClass('active');
+                }
+                else{
+                    $('#phone').css("transform", "translateY(0%)");
+                    $('#mail').css("transform", "translateY(0%)");
+                    $('#bell').removeClass('active');
+                }
+            },
+            "blur" : ()=>{
                 $('#phone').css("transform", "translateY(0%)");
                 $('#mail').css("transform", "translateY(0%)");
                 $('#bell').removeClass('active');

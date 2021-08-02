@@ -17,35 +17,28 @@
 
     if(isset($_SESSION['cart'])){
         $carts = $_SESSION['cart'];
-        foreach($carts as $id => $c){
-            if(isset($_REQUEST['btnRemoveItem' . $id])){
-                $id = (int) $_POST['removeId' . $id];
-                //echo "<script>alert('". $id ."')</script>";
-                $bIkd = (int) $_SESSION['cart'][$id];
-                $b = $bikeMan->getBikeById($bIkd);
-                unset($_SESSION['cart'][$id]);
+        $simpleCarts = array_count_values($carts);
+        foreach($simpleCarts as $bikeId => $quantity){
+            if(isset($_REQUEST['btnRemoveItem' . $bikeId])){
+                $b = $bikeMan->getBikeById($bikeId);
+                foreach($_SESSION['cart'] as $cartId => $cartItem){
+                    if($cartItem == $bikeId){
+                        unset($_SESSION['cart'][$cartId]);
+                    }
+                }
                 $_SESSION['cart'] = array_values($_SESSION['cart']);
-                $_SESSION['message'][] = ['title'=>'Giỏ hàng', 'status'=>'info' , 'content'=>'<div>Đã loại bỏ <b>'. $b->bikeName .'</b> khỏi giỏ hàng <span class="fas fa-cart-plus text-danger"></span> thành công</div>'];
-                //echo "<script>location.assign('". $_SERVER['PHP_SELF'] ."')</script>";
+                $_SESSION['message'][] = ['title'=>'Giỏ hàng', 'status'=>'info' , 'content'=>'<div>Đã loại bỏ '. $quantity .' <b>'. $b->bikeName .'</b> khỏi giỏ hàng <span class="fas fa-cart-plus text-danger"></span> thành công</div>'];
+                echo "<script>location.assign('". $_SERVER['PHP_SELF'] ."')</script>";
             }
         }
     }
     if(isset($_REQUEST['btnCheckOut'])){
-        $quantity = "";
-        $arrInput = [];
-        foreach ($_SESSION['cart'] as $id => $cart){
-            $arrInput[] = "nudItemCount" . $id;
-        }
-        foreach($_SESSION['cart'] as $id => $cart){
-            $quantity .= $_POST[$arrInput[$id]] . "|";
-        }
-        $quantity = substr($quantity, 0, strlen($quantity) - 1);
-        echo "<script>location.assign('http://localhost:63342/Website/Checkout.php?quantity=". $quantity ."')</script>";
+        echo "<script>location.assign('Checkout.php')</script>";
     }
 
     if(isset($_REQUEST['btnSearch']) || isset($_REQUEST['txtSearch'])){
         $t = $_POST['txtSearch'];
-        echo "<script>location.assign('http://localhost:63342/Website/ProductList.php?q=". $t ."')</script>";
+        echo "<script>location.assign('/Website/ProductList.php?q=". $t ."')</script>";
     }
 ?>
 <div class="navbar navbar-dark navbar-expand-sm bg-dark">
@@ -65,13 +58,13 @@
     <div id="main_menu" class="navbar-collapse collapse">
         <ul class="navbar-nav top-menu">
             <li class="nav-item">
-                <a href="http://localhost:63342/Website/HomePage.php" class="nav-link <?= $is_homepage ? 'active' : '' ?> rounded-0 px-3 btn btn-dark btn-block text-center">TRANG CHỦ</a>
+                <a href="/Website/HomePage.php" class="nav-link <?= $is_homepage ? 'active' : '' ?> rounded-0 px-3 btn btn-dark btn-block text-center">TRANG CHỦ</a>
             </li>
             <li class="nav-item ">
                 <a href="" class="nav-link rounded-0 px-3 btn btn-dark btn-block">TIN TỨC</a>
             </li>
             <li class="nav-item ">
-                <a href="http://localhost:63342/Website/PostList.php" class="nav-link <?= $is_postlist ? 'active' : '' ?> rounded-0 px-3 btn btn-dark">BLOG</a>
+                <a href="/Website/PostList.php" class="nav-link <?= $is_postlist ? 'active' : '' ?> rounded-0 px-3 btn btn-dark">BLOG</a>
             </li>
             <li class="nav-item">
                 <a href="" class="nav-link rounded-0 px-3 btn btn-dark">VIDEOS</a>
@@ -105,7 +98,7 @@
                 ?>
             </span>
         </div>
-        <div class="shadow bg-light dropdown-menu dropdown-menu-right position-absolute" style="width: 350px; max-height: 400px; overflow-x: hidden; overflow-y: auto;">
+        <div class="shadow bg-light dropdown-menu dropdown-menu-right position-absolute" style="width: 400px; max-height: 400px; overflow-x: hidden; overflow-y: auto;">
             <form action="" method="post">
                 <div class="p-2 bg-light">
                     <div class="text-uppercase text-center text-light p-2 mt-0" style="background-color: #009688; color: white; font-weight: bold">
@@ -118,25 +111,26 @@
                             if(count($_SESSION['cart']) > 0){
                                 $carts = $_SESSION['cart'];
                                 $cartTotal = 0;
-                                foreach($carts as $cardId => $bikeId){
+                                $simpleCarts = array_count_values($carts);
+                                foreach($simpleCarts as $bikeId => $quantity){
                                     $bike = $bikeMan->getBikeById($bikeId);
                                     global $cartTotal;
-                                    $cartTotal += $bike->bikeDiscountPrice > 0 ? $bike->bikeDiscountPrice : $bike->bikePrice; ?>
+                                    $cartTotal += ($bike->bikeDiscountPrice > 0 ? $bike->bikeDiscountPrice : $bike->bikePrice) * $quantity; ?>
                                     <div class="clear row mb-2 position-relative">
                                         <div class="col-10">
-                                            <img class="img-thumbnail mr-3" style="width: 80px; float: left" src="<?= $bike->bikeImage ?>" alt="">
+                                            <img class="img-thumbnail mr-3" style="width: 80px; float: left" src="storage/<?= $bike->bikeImage ?>" alt="">
                                             <div class="cart-heading"><?= $bike->bikeName ?></div>
                                             <div class="form-group" style="margin: 0">
-                                                <label for="nudItemCount<?= $cardId ?>">Số lượng</label>
-                                                <input onchange="nudItemCount_onchange(event)" type="number" value="1" min="1" max="999" name="nudItemCount<?= $cardId ?>" id="nudItemCount<?= $cardId ?>" class="">
+                                                <label for="nudItemCount<?= $bikeId ?>">Số lượng</label>
+                                                <input onchange="nudItemCount_onchange(event)" type="number" value="<?= $quantity ?>" min="1" max="999" name="nudItemCount<?= $bikeId ?>" id="nudItemCount<?= $bikeId ?>" class="">
                                             </div>
-                                            <div id="cartItemPrice<?= $cardId ?>" class="cart-item-price"><?= $bike->bikeDiscountPrice > 0 ? formatPrice($bike->bikeDiscountPrice) : formatPrice($bike->bikePrice) ?> &#8363;</div>
+                                            <div id="cartItemPrice<?= $bikeId ?>" class="cart-item-price"><?= $bike->bikeDiscountPrice > 0 ? formatPrice($bike->bikeDiscountPrice) : formatPrice($bike->bikePrice) ?> &#8363;</div>
                                         </div>
                                         <div class="col-2 d-flex flex-column align-content-center justify-content-center">
-                                            <button onclick="return clearCart(this.name)" name="btnRemoveItem<?= $cardId ?>" id="btnRemoveItem<?= $cardId ?>" class="close">
+                                            <button onclick="return clearCart(this.name)" name="btnRemoveItem<?= $bikeId ?>" id="btnRemoveItem<?= $bikeId ?>" class="close">
                                                 <span class="fa fa-times text-danger"></span>
                                             </button>
-                                            <input type="hidden" name="removeId<?= $cardId ?>" value="<?= $cardId ?>">
+                                            <input type="hidden" name="removeId<?= $bikeId ?>" value="<?= $bikeId ?>">
                                         </div>
                                     </div>
                                 <?php }
@@ -156,24 +150,27 @@
                 </div>
             </form>
             <script>
-                var countItem = parseInt("<?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>");
-
                 function nudItemCount_onchange(e){
-                    var totalPrice = 0;
-                    for(var i = 0; i < countItem; i++){
-                        var priceUnit = parseInt($('#cartItemPrice' + i).text().replace(/,/g, ""));
-                        var quantity = $('#nudItemCount' + i).val();
-                        totalPrice += priceUnit * quantity;
+                    var bikeId = e.target.name.substr("nudItemCount".length);
+                    var httpRequest = new XMLHttpRequest();
+                    var defaultValue = e.target.defaultValue;
+                    httpRequest.onreadystatechange = ()=>{
+                        location.assign("<?= $_SERVER['PHP_SELF'] ?><?= $_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '' ?>");
+                    };
+                    if(e.target.value > defaultValue){
+                        httpRequest.open("POST", "AddToCart.php?addToCart=" + bikeId, true);
                     }
-                    totalPrice = Intl.NumberFormat('en').format(totalPrice);
-                    $('.cart-total-price').html(totalPrice + " &#8363;");
+                    else{
+                        httpRequest.open("POST", "AddToCart.php?removeFromCart=" + bikeId, true);
+                    }
+                    httpRequest.send();
                 }
 
                 function clearCart(e){
                     var r = confirm("Bạn muốn xóa sản phẩm này khỏi giỏ hàng?");
                     if(r){
                         var httpRequest = new XMLHttpRequest();
-                        httpRequest.open("POST", "http://localhost:63342/Website/AddToCart.php?reset=true&selection=" + "<?= implode('|', $arr_name_type ?? []) ?>" + "|" + "<?= implode('|', $arr_name_brand ?? []) ?>", true);
+                        httpRequest.open("POST", "/Website/AddToCart.php?reset=true&selection=" + "<?= implode('|', $arr_name_type ?? []) ?>" + "|" + "<?= implode('|', $arr_name_brand ?? []) ?>", true);
                         httpRequest.send();
                     }
                     else{

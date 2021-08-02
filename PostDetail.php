@@ -249,6 +249,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <div class="header">
         <?php include "layout/header.php" ?>
         <?php include "inc/call.php" ?>
+        <?php include "inc/message.php" ?>
         <?php include "inc/scrollToTop.php" ?>
     </div>
 
@@ -278,7 +279,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                             foreach($posts as $id => $post){ ?>
                                 <div class="post-container p-2 border my-2 rounded">
                                     <a href="PostDetail.php?postId=<?= $post->postId ?>" class="stretched-link"></a>
-                                    <img class="img-thumbnail mr-2" style="width: 100px; float: left;" src="<?= $post->postImage ?>" alt="<?= $post->postImage ?>">
+                                    <img class="img-thumbnail mr-2" style="width: 100px; float: left;" src="storage/<?= $post->postImage ?>" alt="<?= $post->postImage ?>">
                                     <div class="post-body">
                                         <div class="font-weight-bold" style="font-size: 1.15em;"><?= $post->postTitle ?></div>
                                         <div class="text-justify">

@@ -1,1 +1,1 @@
-<figure class="image image_resized" style="width:50o_o;"><img src="http://localhost:63342/Website/storage/uploads/bike/images/hinh-nen-lien-quan-may-tinh-Aleister.jpg"><figcaption>Aleister</figcaption></figure><p>Day la Aleister, tuong Phap su.</p>
+<ul class="todo-list"><li><label class="todo-list__label"><input type="checkbox" disabled="disabled"><span class="todo-list__label__description">sasd</span></label></li><li><label class="todo-list__label"><input type="checkbox" disabled="disabled"><span class="todo-list__label__description">asdasd</span></label></li></ul>

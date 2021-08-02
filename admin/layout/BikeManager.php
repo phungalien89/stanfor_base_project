@@ -6,13 +6,13 @@ spl_autoload_register(function($class_name){
     $bikeProvider = new BikeProvider();
     if(isset($_REQUEST['btnAddProduct'])){
         $_SESSION['bike_action'] = "add";
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
     }
     if(isset($_REQUEST['btnEditBike'])){
         $_SESSION['bike_action'] = "edit";
         $bikeId = (int) $_POST['bikeId'];
         $_SESSION['bikeId'] = $bikeId;
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
     }
     if(isset($_REQUEST['btnDeleteBike'])){
         $bikeId = (int) $_POST['bikeId'];
@@ -23,7 +23,7 @@ spl_autoload_register(function($class_name){
         $filePath = str_replace("/", "\\", $filePath);
         unlink($_SERVER['DOCUMENT_ROOT'] . $filePath);//also delete the bike image
         $_SESSION['message'][] = ['title'=>'Xóa sản phẩm', 'status'=>'info', 'content'=>'Đã xóa <b>'. $b->bikeName .'</b> thành công!'];
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
     }
 
     /**

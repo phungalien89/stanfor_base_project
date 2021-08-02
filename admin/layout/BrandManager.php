@@ -7,13 +7,13 @@ spl_autoload_register(function($class_name){
     $brands = $brandProvider->getAllBrand();
     if(isset($_REQUEST['btn_addNewBrand'])){
         $_SESSION['brand_action'] = "add";
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
     }
     if(isset($_REQUEST['btnEditBrand'])){
         $_SESSION['brand_action'] = "edit";
         $brandId = (int) $_POST['brandId'];
         $_SESSION['brandId'] = $brandId;
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
     }
     if(isset($_REQUEST['btnDeleteBrand'])){
         $brandId = (int) $_POST['brandId'];
@@ -21,12 +21,12 @@ spl_autoload_register(function($class_name){
         $brandProvider->deleteBrand($brandId);
         unset($_SESSION['brand_action']);
 
-        $prefix = "http://localhost:63342/Website";
+        $prefix = "/Website";
         $filePath = substr($br->brandLogo, strlen($prefix));
         $filePath = str_replace("/", "\\", $filePath);
         unlink($_SERVER['DOCUMENT_ROOT'] . $filePath);//also delete the brand image
         $_SESSION['message'][] = ['title'=>'Xóa thương hiệu', 'status'=>'info', 'content'=>'Đã xóa thương hiệu <b>'. $br->brandName .'</b> thành công!'];
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
     }
 
 ?>
@@ -92,7 +92,7 @@ spl_autoload_register(function($class_name){
                             <div class="hover-scale" style="width: 80px">
                                 <?php
                                     if(strlen($brand->brandLogo) > 0){ ?>
-                                        <img class="img-thumbnail w-100" src="<?= $brand->brandLogo ?>" alt="">
+                                        <img class="img-thumbnail w-100" src="../storage/<?= $brand->brandLogo ?>" alt="../storage/<?= $brand->brandLogo ?>">
                                     <?php }
                                 ?>
                             </div>

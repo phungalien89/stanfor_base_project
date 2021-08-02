@@ -7,13 +7,13 @@ spl_autoload_register(function($class_name){
     $users = $userProvider->getAllUser();
     if(isset($_REQUEST['btnAddUser'])){
         $_SESSION['user_action'] = "add";
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
     }
     if(isset($_REQUEST['btnEditUser'])){
         $_SESSION['user_action'] = "edit";
         $userId = (int) $_POST['userId'];
         $_SESSION['userId'] = $userId;
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
     }
     if(isset($_REQUEST['btnDeleteUser'])){
         $userId = (int) $_POST['userId'];
@@ -24,7 +24,7 @@ spl_autoload_register(function($class_name){
         unlink($_SERVER['DOCUMENT_ROOT'] . $filePath);//also delete the user image
         unset($_SESSION['user_action']);
         $_SESSION['message'][] = ['title'=>'Xóa người dùng', 'status'=>'info', 'content'=>'Đã xóa <b>'. $usr->userDisplayName .'</b> thành công!'];
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
     }
 ?>
 <style>

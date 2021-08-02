@@ -51,7 +51,7 @@ $manager = new ImageManager(array('driver' => 'imagick'));
     $userProvider = new UserProvider();
     if(isset($_REQUEST['btnReturn'])){
         unset($_SESSION['user_action']);
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php')</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php')</script>";
     }
 
     if(isset($_SESSION['userId'])){
@@ -148,7 +148,7 @@ $manager = new ImageManager(array('driver' => 'imagick'));
                     // to finally create image instances
                     $img_tmp = $manager->make($_SERVER['DOCUMENT_ROOT'] . "\storage\uploads\profile\\" . basename($image['name']))->fit(1200);
                     $img_tmp->save();
-                    $filePath = "/storage/" . $dir;
+                    $filePath = "/storage/" . $dir . $imagePath;
                     $filePath = str_replace("/", "\\", $filePath);
                     unlink($_SERVER['DOCUMENT_ROOT'] . $filePath);//also delete the user image
                     $imagePath = $dir . basename($image['name']);
@@ -163,7 +163,7 @@ $manager = new ImageManager(array('driver' => 'imagick'));
 
                 unset($_SESSION['user_action']);
                 $_SESSION['message'][] = ['title'=>'Cập nhật người dùng', 'status'=>'success', 'content'=>'Đã cập nhật <b>'. $user->userDisplayName .'</b> thành công!'];
-                echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php')</script>";
+                echo "<script>location.assign('/Website/admin/AdminPage.php')</script>";
             }
 
         }
@@ -235,7 +235,7 @@ $manager = new ImageManager(array('driver' => 'imagick'));
                                     <label id="file_label" for="txtImage" class="custom-file-label">Chọn file để upload</label>
                                 </div>
                                 <div class="row mx-auto w-50 pt-3">
-                                    <img id="file_image" class="rounded-circle w-100" src="<?= '../storage/' . $imagePath ?>" alt="">
+                                    <img id="file_image" class="rounded-circle w-100" src="<?= strlen($imagePath) > 0 ? '../storage/'.$imagePath : '' ?>" alt="">
                                 </div>
                                 <?php
                                 if(strlen($mess_image) > 0){ ?>

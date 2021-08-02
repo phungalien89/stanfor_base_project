@@ -7,13 +7,13 @@ spl_autoload_register(function($class_name){
     $types = $typeProvider->getAllType();
     if(isset($_REQUEST['btn_addNewType'])){
         $_SESSION['type_action'] = "add";
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
     }
     if(isset($_REQUEST['btnEditType'])){
         $_SESSION['type_action'] = "edit";
         $typeId = (int) $_POST['typeId'];
         $_SESSION['typeId'] = $typeId;
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
     }
     if(isset($_REQUEST['btnDeleteType'])){
         $typeId = (int) $_POST['typeId'];
@@ -21,7 +21,7 @@ spl_autoload_register(function($class_name){
         $typeProvider->deleteType($typeId);
         $_SESSION['message'][] = ['title'=>'Xóa kiểu xe', 'status'=>'info', 'content'=>'Đã xóa kiểu xe <b>'. $t->typeName .'</b> thành công!'];
         unset($_SESSION['type_action']);
-        echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+        echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
     }
 ?>
 <style>
@@ -64,7 +64,7 @@ spl_autoload_register(function($class_name){
                         <td><?= $type->typeId ?></td>
                         <td>
                             <div class="hover-scale" style="width: 80px">
-                                <img class="img-thumbnail w-100" src="<?= $type->typeImage ?>" alt="">
+                                <img class="img-thumbnail w-100" src="../storage/<?= $type->typeImage ?>" alt="../storage/<?= $type->typeImage ?>">
                             </div>
                         </td>
                         <td><?= $type->typeName ?></td>

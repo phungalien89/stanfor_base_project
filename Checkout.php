@@ -239,6 +239,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         flex-wrap: wrap;
         justify-content: flex-start;
     }
+    .invalid-feedback:before{
+        content: "\f071";
+        font-family: fontAwesome-s;
+        padding-right: 0.5em;
+    }
 
 </style>
 <body>
@@ -286,16 +291,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             $response = file_get_contents($url);
 
             $arr = json_decode($response, true);
-            var_dump($url);
-            /*var_dump("Place ID = " . $arr['candidates'][0]['place_id']);
-            var_dump("Search result = " . $arr['status']);*/
+            //var_dump("Search result = " . $arr['status']);
+            //var_dump($arr);
             $status = $arr['status'];
             if ($status == "OK"){
                 $place_id = "place_id:" . $arr['candidates'][0]['place_id'];
                 $mapOK = true;
             }
             else{
-                $mes_address = "Địa chỉ bạn nhập không có trên Trái Đất";
+                $mes_address = "Địa chỉ bạn nhập không có thật";
                 $dataOK = false;
             }
         }
@@ -474,6 +478,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         <div class="content">
             <?php
                 include "inc/message.php";
+                include "inc/scrollToTop.php";
             ?>
             <div class="">
                 <div class="bikeHeading">
@@ -491,14 +496,19 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <fieldset class="p-2">
                             <legend>Sản phẩm của bạn</legend>
                             <div class="row">
-                                <div class="col-sm-7">
+                                <div class="col-sm-8">
                                     <?php
                                     $bikeMan = new BikeProvider();
-                                    foreach($carts as $id => $cart){
-                                        $bike = $bikeMan->getBikeById($cart); ?>
+                                    $simpleCarts = array_count_values($carts);
+                                    $cartTotal = 0;
+                                    foreach($simpleCarts as $bikeId => $quantity){
+                                        $bike = $bikeMan->getBikeById($bikeId);
+                                        $price = $bike->bikeDiscountPrice > 0 ? $bike->bikeDiscountPrice : $bike->bikePrice;
+                                        $cartTotal += $price * $quantity;
+                                        ?>
                                         <div class="p-2 row">
                                             <div class="col-sm-3">
-                                                <img class="w-100" src="<?= $bike->bikeImage ?>" alt="">
+                                                <img class="w-100" src="storage/<?= $bike->bikeImage ?>" alt="<?= $bike->bikeImage ?>">
                                             </div>
                                             <div class="col-sm-9">
                                                 <div class="d-flex flex-column">
@@ -506,7 +516,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                                     <div id="cartItemPrice" class="cart-item-price">Đơn giá: <?= formatPrice($bike->bikeDiscountPrice > 0 ? $bike->bikeDiscountPrice : $bike->bikePrice) ?> &#8363;</div>
                                                     <div class="d-flex align-items-center pt-2">
                                                         <label for="">Số lượng</label>
-                                                        <input value="<?= $arr_quantity[$id] ?>" min="1" max="999" onchange="calculateTotal()" class="form-control mx-2 text-center" style="width: 100px;" type="number" name="nudCount<?= $id ?>" id="nudCount<?= $id ?>">
+                                                        <input value="<?= $quantity ?>" min="0" max="999" onchange="calculateTotal(event, '<?= $bike->bikeName ?>')" class="form-control mx-2 text-center" style="width: 100px;" type="number" name="nudCount<?= $bikeId ?>" id="nudCount<?= $bikeId ?>">
+                                                        <div class="cart-item-price">
+                                                            <div style="color: #009688 !important;">Thành tiền:</div>
+                                                            <div><?= formatPrice($price * $quantity) ?> &#8363;</div>
+                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -517,11 +531,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                     <?php }
                                     ?>
                                 </div>
-                                <div class="col-sm-5 d-flex flex-column align-items-center justify-content-center">
+                                <div class="col-sm-4 d-flex flex-column align-items-center justify-content-center">
                                     <div class="  p-2 justify-content-center align-content-center">
                                         <div class="cart-total">
                                             <span class="text-uppercase">tạm tính</span>
-                                            <div class="cart-total-price"></div>
+                                            <div class="cart-total-price"><?= formatPrice($cartTotal) ?> &#8363;</div>
                                         </div>
                                     </div>
                                 </div>
@@ -618,27 +632,32 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <script type="text/javascript">
     var countItem = parseInt("<?= isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0 ?>");
 
-    function calculateTotal(){
-        var totalPrice = 0;
-        for(var i = 0; i < countItem; i++){
-            var priceUnit = parseInt($('#cartItemPrice' + i).text().replace(/,/g, ""));
-            var quantity = $('#nudCount' + i).val();
-            //alert(quantity);
-            totalPrice += priceUnit * quantity;
+    function calculateTotal(e, bikeName){
+        var httpRequest = new XMLHttpRequest();
+        var bikeId = e.target.name.substr("nudCount".length);
+        if(e.target.value == 0){
+            var r = confirm("Bạn có muốn bỏ sản phẩm "+ bikeName +" khỏi giỏ hàng?")
+            if(r){
+                httpRequest.open("POST", "AddToCart.php?removeFromCart=" + bikeId);
+            }
+            else{
+                e.target.value = 1;
+                return false;
+            }
         }
-        totalPrice = Intl.NumberFormat('en').format(totalPrice);
-        $('.cart-total-price').html(totalPrice + " &#8363;");
+        httpRequest.onreadystatechange = ()=>{
+            location.assign("<?= $_SERVER['PHP_SELF'] ?>");
+        };
+        if(e.target.defaultValue < e.target.value){
+            httpRequest.open("POST", "AddToCart.php?addToCart=" + bikeId);
+        }
+        else{
+            httpRequest.open("POST", "AddToCart.php?removeFromCart=" + bikeId);
+        }
+        httpRequest.send();
     }
     var loadedMap = '<?= isset($_SESSION['loadedMap']) ? 'true' : 'false' ?>';
     if(loadedMap == "false" ){
-        /*$.getJSON("https://geolocation-db.com/json/")
-            .done((locate)=>{
-                var map = '<iframe width="100%" height="350" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBuURuyU9pV82S4sQpfo6c3OaYGyX26mYU&q='+ locate.latitude + ',' + locate.longitude +'" allowfullscreen></iframe>';
-                $('#Gmap').html(map);
-                var httpRequest = new XMLHttpRequest();
-                httpRequest.open("POST", "admin/geolocation.php?loadedMap=OK", true);
-                httpRequest.send();
-            });*/
         if(navigator.geolocation){
             navigator.geolocation.getCurrentPosition((loc)=>{
                 var map = '<iframe width="100%" height="350" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBuURuyU9pV82S4sQpfo6c3OaYGyX26mYU&q='+ loc.coords.latitude + ',' + loc.coords.longitude +'" allowfullscreen></iframe>';

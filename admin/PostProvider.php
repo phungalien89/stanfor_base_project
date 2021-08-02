@@ -9,11 +9,14 @@ class PostProvider extends DataProvider
     /**
      * Get all posts in database
      */
-    public function getAllPost()
+    public function getAllPost($num='all')
     {
         $arrPost = [];
         $conn = $this->connect();
         $cmd = "SELECT * FROM post";
+        if($num != 'all'){
+            $cmd .= " LIMIT 4 OFFSET " . (int) $num;
+        }
         $res = mysqli_query($conn, $cmd);
         while($row = mysqli_fetch_array($res)){
             $post = new Post();
@@ -123,7 +126,7 @@ class PostProvider extends DataProvider
             return;
         }
         $conn = $this->connect();
-        $cmd = "UPDATE post SET postTitle=?, postImage=?, postContent=?, postTag=?, dateModified=NOW() WHERE postId='". $post->postId ."'";
+        $cmd = "UPDATE post SET postTitle=?, postImage=?, postContent=?, postTag=?, dateModified=NOW() WHERE postId=". $post->postId;
         //print_r($cmd);
         $stm = $conn->prepare($cmd);
         $stm->bind_param('ssss', $post->postTitle, $post->postImage, $post->postContent, $post->postTag);

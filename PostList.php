@@ -227,12 +227,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <?php
     $postMan = new PostProvider();
     $post = null;
-    $posts = $postMan->getAllPost();
-
     $currentPage = 1;
+    $countPage = 0;
     if(isset($_SESSION['postPage'])){
         $currentPage = (int) $_SESSION['postPage'];
     }
+
+    $posts = $postMan->getAllPost();
+    $countPage = count($posts);
+    $posts = $postMan->getAllPost(strval(4 * ($currentPage-1)));
 ?>
 <div class="wrap">
     <div class="header">
@@ -250,8 +253,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <div class="clear"></div>
             </div>
             <?php
-                $pageNum = floor(count($posts) / 4);
-                if(count($posts) % 4 > 0){
+                $pageNum = floor($countPage / 4);
+                if($countPage % 4 > 0){
                     $pageNum += 1;
                 }
             ?>
@@ -314,46 +317,45 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             <div class="section group py-3">
                 <div class="flex-column">
                     <?php
-                    foreach($posts as $id => $post) {
-                        if ($id >= (4 * ($currentPage - 1)) && $id < (4 * $currentPage)) { ?>
-                            <div class="post-container p-2 border my-2 rounded">
-                                <a href="PostDetail.php?postId=<?= $post->postId ?>"
-                                   class="stretched-link"></a>
-                                <div class="row">
-                                    <div class="col-sm-4 col-lg-3">
-                                        <img class="img-thumbnail w-100" src="<?= $post->postImage ?>"
-                                             alt="<?= $post->postImage ?>">
-                                    </div>
-                                    <div class="col-sm-8 col-lg-9">
-                                        <div class="post-body">
-                                            <div class="font-weight-bold"
-                                                 style="font-size: 1.15em;"><?= $post->postTitle ?></div>
-                                            <div class="text-justify">
-                                                <div id="post-content<?= $id ?>"></div>
-                                                <script>
-                                                    var el = document.createElement('body')
-                                                    el.innerHTML = '<?= $post->postContent ?>';
-                                                    var Ptags = el.getElementsByTagName('p');
-                                                    for (var x of Ptags) {
-                                                        var wordCount = 0;
-                                                        for (var i = 0; i < x.innerHTML.length; i++) {
-                                                            if (x.innerHTML.charAt(i) == " ") {
-                                                                wordCount++;
-                                                            }
-                                                            if (wordCount >= 50) {
-                                                                var txt = x.innerHTML.substr(0, i);
-                                                                $('#post-content<?= $id ?>').html(txt + "...");
-                                                                break;
-                                                            }
+                    foreach($posts as $id => $post) { ?>
+                        <div class="post-container p-2 border my-2 rounded">
+                            <a href="PostDetail.php?postId=<?= $post->postId ?>"
+                               class="stretched-link"></a>
+                            <div class="row">
+                                <div class="col-sm-4 col-lg-3">
+                                    <img class="img-thumbnail w-100" src="storage/<?= $post->postImage ?>"
+                                         alt="storage/<?= $post->postImage ?>">
+                                </div>
+                                <div class="col-sm-8 col-lg-9">
+                                    <div class="post-body">
+                                        <div class="font-weight-bold"
+                                             style="font-size: 1.15em;"><?= $post->postTitle ?></div>
+                                        <div class="text-justify">
+                                            <div id="post-content<?= $id ?>"></div>
+                                            <script>
+                                                var el = document.createElement('body')
+                                                el.innerHTML = '<?= $post->postContent ?>';
+                                                var Ptags = el.getElementsByTagName('p');
+                                                for (var x of Ptags) {
+                                                    var wordCount = 0;
+                                                    for (var i = 0; i < x.innerHTML.length; i++) {
+                                                        if (x.innerHTML.charAt(i) == " ") {
+                                                            wordCount++;
+                                                        }
+                                                        if (wordCount >= 50) {
+                                                            var txt = x.innerHTML.substr(0, i);
+                                                            $('#post-content<?= $id ?>').html(txt + "...");
+                                                            break;
                                                         }
                                                     }
-                                                </script>
-                                            </div>
+                                                }
+                                            </script>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        <?php }
+                        </div>
+                        <?php
                     }
                     ?>
                 </div>

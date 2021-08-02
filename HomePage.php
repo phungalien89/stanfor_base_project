@@ -175,12 +175,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                         <input type="hidden" name="bikeId" value="<?= $newBike->bikeId ?>">
                                         <button data-toggle="tooltip" title="Thêm vào yêu thích" name="btnAddWish"
                                                 id="btnAddWishNew<?= $newBike->bikeId ?>"
-                                                class="btn btn-danger" <?= array_search($newBike->bikeId, $_SESSION['wish'] ?? []) > -1 ? 'disabled' : '' ?>>
+                                                class="btn btn-danger" <?= array_search($newBike->bikeId, $_SESSION['wish'] ?? []) > -1 ? 'disabled' :'' ?>>
                                             <span class="fas fa-heart"></span>
                                         </button>
                                         <button data-toggle="tooltip" title="Thêm vào giỏ hàng" name="btnAddCart"
                                                 id="btnAddCartNew<?= $newBike->bikeId ?>"
-                                                class="btn btn-info" <?= array_search($newBike->bikeId, $_SESSION['cart'] ?? []) > -1 ? 'disabled' : '' ?>>
+                                                class="btn btn-info">
                                             <span class="fas fa-cart-plus"></span>
                                         </button>
                                         <script>
@@ -191,7 +191,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                                         location.assign('<?= $_SERVER['PHP_SELF'] ?>');
                                                     }
                                                 };
-                                                httpRequest.open("POST", "/AddToCart.php?addToCart=<?= $newBike->bikeId ?>", true);
+                                                httpRequest.open("POST", "AddToCart.php?addToCart=<?= $newBike->bikeId ?>", true);
                                                 httpRequest.send();
                                             });
                                             $('#btnAddWishNew<?= $newBike->bikeId ?>').on("click", () => {
@@ -254,7 +254,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                         <button data-toggle="tooltip" title="Thêm vào yêu thích" name="btnAddWish" id="btnAddWishPromote<?= $bike->bikeId ?>" class="btn btn-danger" <?= array_search($bike->bikeId, $_SESSION['wish'] ?? []) > -1 ? 'disabled' : '' ?>>
                                             <span class="fas fa-heart"></span>
                                         </button>
-                                        <button data-toggle="tooltip" title="Thêm vào giỏ hàng" name="btnAddCart" id="btnAddCartPromote<?= $bike->bikeId ?>" class="btn btn-info" <?= array_search($bike->bikeId, $_SESSION['cart'] ?? []) > -1 ? 'disabled' : '' ?>>
+                                        <button data-toggle="tooltip" title="Thêm vào giỏ hàng" name="btnAddCart" id="btnAddCartPromote<?= $bike->bikeId ?>" class="btn btn-info">
                                             <span class="fas fa-cart-plus"></span>
                                         </button>
                                         <script>

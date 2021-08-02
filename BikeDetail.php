@@ -226,6 +226,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <div class="header">
         <?php include "layout/header.php" ?>
         <?php include "inc/message.php" ?>
+        <?php include "inc/call.php" ?>
+        <?php include "inc/scrollToTop.php" ?>
+
     </div>
 
     <div class="main">
@@ -269,11 +272,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                             </button>
                                             <div class="modal-body">
                                                 <div data-ride="carousel" data-interval="1500" class="carousel slide w-100" id="carousel_modal">
-                                                    <div class="carousel-indicators">
+                                                    <div class="carousel-indicators pb-3">
                                                         <?php
                                                         foreach($arr_img as $id => $img){ ?>
                                                             <div class="p-1 col-3 <?= $id == 0 ? 'active' : '' ?>">
-                                                                <img class="img-thumbnail" data-target="#carousel_modal" data-slide-to="<?= $id ?>" src="<?= $img ?>" alt="">
+                                                                <img style="width: 40px;" class="img-thumbnail" data-target="#carousel_modal" data-slide-to="<?= $id ?>" src="<?= $img ?>" alt="">
                                                             </div>
                                                         <?php }
                                                         ?>
@@ -307,7 +310,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                     <button data-toggle="tooltip" title="Thêm vào yêu thích" name="btnAddWish" id="btnAddWish<?= $bikeDetail->bikeId ?>" class="btn btn-danger" <?= array_search($bikeDetail->bikeId, $_SESSION['wish'] ?? []) > -1 ? 'disabled' : '' ?>>
                                         <span class="fas fa-heart"></span>
                                     </button>
-                                    <button data-toggle="tooltip" title="Thêm vào giỏ hàng" name="btnAddCart" id="btnAddCart<?= $bikeDetail->bikeId ?>" class="btn btn-info" <?= array_search($bikeDetail->bikeId, $_SESSION['cart'] ?? []) > -1 ? 'disabled' : '' ?>>
+                                    <button data-toggle="tooltip" title="Thêm vào giỏ hàng" name="btnAddCart" id="btnAddCart<?= $bikeDetail->bikeId ?>" class="btn btn-info">
                                         <span class="fas fa-cart-plus"></span>
                                     </button>
                                 </div>
@@ -390,7 +393,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                             foreach($posts as $id => $post){ ?>
                                 <div class="post-container p-2 border my-2 rounded">
                                     <a href="PostDetail.php?postId=<?= $post->postId ?>" class="stretched-link"></a>
-                                    <img class="img-thumbnail mr-2" style="width: 100px; float: left;" src="<?= $post->postImage ?>" alt="<?= $post->postImage ?>">
+                                    <img class="img-thumbnail mr-2" style="width: 100px; float: left;" src="storage/<?= $post->postImage ?>" alt="<?= $post->postImage ?>">
                                     <div class="post-body">
                                         <div class="font-weight-bold" style="font-size: 1.15em;"><?= $post->postTitle ?></div>
                                         <div class="text-justify">

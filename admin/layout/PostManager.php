@@ -7,26 +7,26 @@ $postProvider = new PostProvider();
 $posts = $postProvider->getAllPost();
 if(isset($_REQUEST['btn_addNewPost'])){
     $_SESSION['post_action'] = "add";
-    echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+    echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
 }
 if(isset($_REQUEST['btnEditPost'])){
     $_SESSION['post_action'] = "edit";
     $postId = (int) $_POST['postId'];
     $_SESSION['postId'] = $postId;
-    echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+    echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
 }
 if(isset($_REQUEST['btnDeletePost'])){
     $postId = (int) $_POST['postId'];
     $postProvider->deletePost($postId);
     $p = $postProvider->getPostById($postId);
 
-    $prefix = "http://localhost:63342/Website";
+    $prefix = "/Website";
     $filePath = substr($p->postImage, strlen($prefix));
     $filePath = str_replace("/", "\\", $filePath);
     unlink($_SERVER['DOCUMENT_ROOT'] . $filePath);//also delete the post image
     $_SESSION['message'][] = ['title'=>'Xóa bài đăng', 'status'=>'info', 'content'=>'Đã xóa bài đăng <b>'. $p->postTitle .'</b> thành công!'];
     unset($_SESSION['post_action']);
-    echo "<script>location.assign('http://localhost:63342/Website/admin/AdminPage.php');</script>";
+    echo "<script>location.assign('/Website/admin/AdminPage.php');</script>";
 }
 
 ?>
@@ -93,7 +93,7 @@ if(isset($_REQUEST['btnDeletePost'])){
                         <div class="hover-scale" style="width: 80px">
                             <?php
                             if(strlen($post->postImage) > 0){ ?>
-                                <img class="img-thumbnail w-100" src="<?= $post->postImage ?>" alt="">
+                                <img class="img-thumbnail w-100" src="../storage/<?= $post->postImage ?>" alt="">
                             <?php }
                             ?>
                         </div>
